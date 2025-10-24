@@ -1,0 +1,24 @@
+#Shift+Alt+F 自动规范代码格式
+root = true
+
+[*.cs]
+indent_style = space
+indent_size = 4
+
+csharp_space_after_keywords_in_control_flow_statements = false
+csharp_space_after_cast = false
+csharp_space_before_open_square_brackets = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_parentheses = false
+csharp_space_around_binary_operators = false
+csharp_space_before_colon_in_inheritance_clause = false
+csharp_space_after_colon_in_inheritance_clause = false
+csharp_space_before_semicolon_in_for_statement = false
+csharp_space_after_semicolon_in_for_statement = false
+
+csharp_new_line_before_open_brace = none
+csharp_new_line_before_close_brace = all
+
+# 可选：强制 VS Code/OmniSharp 使用此配置
+dotnet_sort_system_directives_first = true
