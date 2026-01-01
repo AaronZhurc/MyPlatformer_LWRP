@@ -16,6 +16,13 @@ namespace Games_tutorial
 
         [SerializeField]
         List<RuntimeAnimatorController> HitReactionList=new List<RuntimeAnimatorController>();
+        
+        [Header("Damage Info")]
+        public Attack Attack;
+        public CharacterControl Attacker;
+        public TriggerDetector DamagedTrigger;
+        public GameObject AttackingPart;
+        
         private void Awake(){
             //DamegeTaken=0;
             control=GetComponent<CharacterControl>();
@@ -79,10 +86,10 @@ namespace Games_tutorial
                     foreach(AttackPartType part in info.AttackParts){
 
                         if(info.Attacker.GetAttackingPart(part)==collider.gameObject){
-                            control.animationProgress.Attack=info.AttackAbility;
-                            control.animationProgress.Attacker=info.Attacker;
-                            control.animationProgress.DamagedTrigger=data.Key;
-                            control.animationProgress.AttackingPart=info.Attacker.GetAttackingPart(part);
+                            control.damageDetector.Attack=info.AttackAbility;
+                            control.damageDetector.Attacker=info.Attacker;
+                            control.damageDetector.DamagedTrigger=data.Key;
+                            control.damageDetector.AttackingPart=info.Attacker.GetAttackingPart(part);
                             return true;
                         }
                         
@@ -112,12 +119,11 @@ namespace Games_tutorial
                 float dist=Vector3.SqrMagnitude(c.transform.position-info.Attacker.transform.position);
                 //Debug.Log(this.gameObject.name+" dist: "+dist.ToString());
                 if(dist<=info.LethalRange){
-                    control.animationProgress.Attack=info.AttackAbility;
-                    control.animationProgress.Attacker=info.Attacker;
+                    control.damageDetector.Attack=info.AttackAbility;
+                    control.damageDetector.Attacker=info.Attacker;
 
                     int index=UnityEngine.Random.Range(0, control.RagdollParts.Count);
-                    control.animationProgress.DamagedTrigger=control.RagdollParts[index].GetComponent<TriggerDetector>();
-
+                    control.damageDetector.DamagedTrigger=control.RagdollParts[index].GetComponent<TriggerDetector>();
                     return true;
                 }
             }
@@ -131,7 +137,7 @@ namespace Games_tutorial
                 return false;
             }
         }
-        private void TakeDamage(AttackInfo info){
+        public void TakeDamage(AttackInfo info){
             if(IsDead()){
                 if(!info.RegisteredTargets.Contains(this.control)){
                     info.RegisteredTargets.Add(this.control);
@@ -160,7 +166,7 @@ namespace Games_tutorial
                         if(info.AttackAbility.ParticleType.ToString().Contains("VFX")) {
                             GameObject vfx = PoolManager.Instance.GetObject(info.AttackAbility.ParticleType);
 
-                            vfx.transform.position = control.animationProgress.AttackingPart.transform.position;
+                            vfx.transform.position = control.damageDetector.AttackingPart.transform.position;
                             vfx.SetActive(true);
                             if(info.Attacker.IsFacingForward()) {
                                 vfx.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
@@ -187,6 +193,8 @@ namespace Games_tutorial
             // }
 
             AttackManager.Instance.ForceDeregister(control);
+
+            control.animationProgress.CurrentRunningAbilities.Clear();
 
             if(IsDead()){
                 control.animationProgress.RagdollTriggered=true;
@@ -217,7 +225,7 @@ namespace Games_tutorial
         }
 
         public void DeathBySpikes(){
-            control.animationProgress.DamagedTrigger = null; //不对身体部位添加任何力
+            control.damageDetector.DamagedTrigger = null; //不对身体部位添加任何力
             hp =0f;
         }
     }

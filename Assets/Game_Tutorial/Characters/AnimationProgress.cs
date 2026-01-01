@@ -36,6 +36,7 @@ namespace Games_tutorial
         //前端查看字典信息可使用Odin-Inspector an Serializer
         public Dictionary<GameObject,GameObject> FrontBlockingObjs=new Dictionary<GameObject,GameObject>(); //<where ray from, where ray to>
         public Dictionary<GameObject,GameObject> UpBlockingObjs=new Dictionary<GameObject,GameObject>(); //<where ray from, where ray to>
+        public Dictionary<GameObject,GameObject> DownBlockingObjs=new Dictionary<GameObject,GameObject>(); 
 
         [Header("AirControl")]
         public bool Jumped;
@@ -45,6 +46,8 @@ namespace Games_tutorial
         public Vector3 MaxFallVelocity;
         public bool CanWallJump;
         public bool CheckWallBlock;
+        public List<CharacterControl> MarioStompTargets=new List<CharacterControl>();
+        public Attack MarioStampAttack;
 
         [Header("UpdateBoxCollider")]
         // public bool UpdatingBoxCollider;
@@ -56,11 +59,6 @@ namespace Games_tutorial
         public Vector3 LandingPosition;
         public bool IsLanding;
 
-        [Header("Damage Info")]
-        public Attack Attack;
-        public CharacterControl Attacker;
-        public TriggerDetector DamagedTrigger;
-        public GameObject AttackingPart;
 
         [Header("Transition")]
         public bool LockTransition;
@@ -139,6 +137,8 @@ namespace Games_tutorial
                     }
                 }
             }
+
+            CheckMarioStop();
         }
 
         void CheckFrontBlocking(){
@@ -162,6 +162,55 @@ namespace Games_tutorial
 
             foreach(GameObject o in FrontSpheresList) {
                 CheckRaycastCollision(o,this.transform.forward*DirBlock,LatestMoveForward.BlockDistance,FrontBlockingObjs);
+            }
+        }
+
+        void CheckMarioStop() {
+            if(control.RIGID_BODY.velocity.y >= 0f) {
+                MarioStompTargets.Clear();
+                DownBlockingObjs.Clear();
+                return;
+            }
+
+            if(MarioStompTargets.Count > 0) {
+                control.RIGID_BODY.velocity=Vector3.zero;
+                control.RIGID_BODY.AddForce(Vector3.up*250f);
+
+                foreach(CharacterControl c in MarioStompTargets) {
+                    AttackInfo info=new AttackInfo();
+                    info.CopyInfo(MarioStampAttack, control);
+
+                    int index=Random.Range(0,c.RagdollParts.Count);
+                    c.damageDetector.DamagedTrigger=c.RagdollParts[index].GetComponent<TriggerDetector>();
+                    c.damageDetector.Attack=MarioStampAttack;
+                    c.damageDetector.Attacker=control;
+                    c.damageDetector.AttackingPart=control.RightFoot_Attack;
+
+                    c.damageDetector.TakeDamage(info);
+                }
+
+                MarioStompTargets.Clear();
+                return;
+            }
+
+            CheckDownBlocking();
+            if(DownBlockingObjs.Count > 0) {
+                foreach(KeyValuePair<GameObject,GameObject> data in DownBlockingObjs) {
+                    CharacterControl c=CharacterManager.Instance.GetCharacter(data.Value.transform.root.gameObject);
+                    if(c != null) {
+                        if(c != control) {
+                            if(!MarioStompTargets.Contains(c)) {
+                                MarioStompTargets.Add(c);
+                            }                        
+                        }
+                    }
+                }
+            }
+        }
+
+        void CheckDownBlocking(){
+            foreach(GameObject o in control.collisionSpheres.BottomSpheres) {
+                CheckRaycastCollision(o,Vector3.down,0.1f,DownBlockingObjs);
             }
         }
 

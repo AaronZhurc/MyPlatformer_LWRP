@@ -20,6 +20,7 @@ namespace Games_tutorial
         public GameObject StartSphere;
         public GameObject EndSphere;
         public bool StartWalk;
+        public List<Vector3> MeshLinks=new List<Vector3>();
 
         public CharacterControl owner=null;
 
@@ -28,6 +29,7 @@ namespace Games_tutorial
         }
 
         public void GoToTarget(){
+            MeshLinks.Clear();
             navMeshAgent.enabled=true;
 
             StartSphere.transform.parent=null;
@@ -62,34 +64,47 @@ namespace Games_tutorial
         IEnumerator _Move(){
             while(true){
                 if(navMeshAgent.isOnOffMeshLink){
-                    //owner.navMeshObstacle.carving=true;
+                    // //owner.navMeshObstacle.carving=true;
 
-                    //StartPosition=transform.position; //记录开始位置
-                    StartSphere.transform.position=navMeshAgent.currentOffMeshLinkData.startPos; //直接使用naVMeshAgent记录的始末位置，无需跳到下一帧
-                    EndSphere.transform.position=navMeshAgent.currentOffMeshLinkData.endPos;
-                    
-                    navMeshAgent.CompleteOffMeshLink(); //移动到下一个Link上去
-                    
-                    //yield return new WaitForEndOfFrame(); //进入下一帧
+                    // //StartPosition=transform.position; //记录开始位置
+                    // StartSphere.transform.position=navMeshAgent.currentOffMeshLinkData.startPos; //直接使用naVMeshAgent记录的始末位置，无需跳到下一帧
+                    // EndSphere.transform.position=navMeshAgent.currentOffMeshLinkData.endPos;
 
-                    //EndPosition=transform.position; //记录结束位置
-                    
-                    navMeshAgent.isStopped=true; //停止移动
-                    StartWalk=true;
+                    // navMeshAgent.CompleteOffMeshLink(); //移动到下一个Link上去
 
-                    //yield break; 
-                    break;
+                    // //yield return new WaitForEndOfFrame(); //进入下一帧
+
+                    // //EndPosition=transform.position; //记录结束位置
+
+                    // navMeshAgent.isStopped=true; //停止移动
+                    // StartWalk=true;
+
+                    // //yield break; 
+                    // break;
+
+                    if(MeshLinks.Count == 0) {
+                        MeshLinks.Add(navMeshAgent.currentOffMeshLinkData.startPos); 
+                        MeshLinks.Add(navMeshAgent.currentOffMeshLinkData.endPos);
+                    }
                 }
                 
                 Vector3 dist=transform.position - navMeshAgent.destination;
                 if(Vector3.SqrMagnitude(dist)<0.5f){
+                    if(MeshLinks.Count > 0) {
+                        StartSphere.transform.position=MeshLinks[0];
+                        EndSphere.transform.position=MeshLinks[1];
+                    }
+                    else {
+                        StartSphere.transform.position=navMeshAgent.destination;
+                        EndSphere.transform.position=navMeshAgent.destination;
+                    }
                     // if(Vector3.SqrMagnitude(owner.transform.position-navMeshAgent.destination)>1f){
                     //     owner.navMeshObstacle.carving=true;
                     // }
                     //StartPosition=transform.position;
-                    StartSphere.transform.position=navMeshAgent.destination;
-                    //EndPosition=transform.position;
-                    EndSphere.transform.position=navMeshAgent.destination;
+                    // StartSphere.transform.position=navMeshAgent.destination;
+                    // //EndPosition=transform.position;
+                    // EndSphere.transform.position=navMeshAgent.destination;
                     navMeshAgent.isStopped=true;
                     StartWalk=true;
                     break;

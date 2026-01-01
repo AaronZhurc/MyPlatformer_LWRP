@@ -45,10 +45,11 @@ namespace Games_tutorial
                 d.OnExit(this,animator,stateInfo);
                 if(characterControl.animationProgress.CurrentRunningAbilities.ContainsKey(d)){
                     characterControl.animationProgress.CurrentRunningAbilities[d]-=1;
+                    if(characterControl.animationProgress.CurrentRunningAbilities[d]<=0){
+                        characterControl.animationProgress.CurrentRunningAbilities.Remove(d);
+                    }
                 }
-                if(characterControl.animationProgress.CurrentRunningAbilities[d]<=0){
-                    characterControl.animationProgress.CurrentRunningAbilities.Remove(d);
-                }
+                
             }   
         }
 

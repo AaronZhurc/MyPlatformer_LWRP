@@ -49,6 +49,22 @@ namespace Games_tutorial
             CurrentHits=0;
         }
 
+        public void CopyInfo(Attack attack, CharacterControl attacker){
+            Attacker=attacker;
+            AttackAbility=attack;
+            //ColliderNames=attack.ColliderNames;
+            AttackParts=attack.AttackParts;
+            // LaunchIntoAir=attack.LaunchIntoAir;
+            // deathType=attack.deathType;
+
+            MustCollide=attack.MustCollide;
+            MustFaceAttacker=attack.MustFaceAttacker;
+            LethalRange=attack.LethalRange;
+            MaxHits=attack.MaxHits;
+            CurrentHits=0;
+        }
+
+
         private void OnDisable(){
             isFinished=true;
         }

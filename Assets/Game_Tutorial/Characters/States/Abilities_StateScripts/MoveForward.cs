@@ -135,8 +135,8 @@ namespace Games_tutorial
             if(!MoveOnHit){
                 return;
             }
-            if(control.animationProgress.Attacker!=null){
-                Vector3 dir=control.transform.position-control.animationProgress.Attacker.transform.position;
+            if(control.damageDetector.Attacker!=null){
+                Vector3 dir=control.transform.position-control.damageDetector.Attacker.transform.position;
                 if(dir.z>0f){
                     if(Speed<0f){
                         Speed*=-1f;

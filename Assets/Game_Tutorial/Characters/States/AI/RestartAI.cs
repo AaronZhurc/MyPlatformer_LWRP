@@ -19,6 +19,9 @@ namespace Games_tutorial
 
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
+            if(!AIIsOnGround(characterState.characterControl)) {
+                return;
+            }
             //walking
             CharacterControl control=characterState.characterControl;
             if(control.aiProgress.AIDistanceToEndSphere()<1f){
@@ -80,6 +83,18 @@ namespace Games_tutorial
                     control.aiController.InitializeAI();
                 }
             }
+        }
+
+        bool AIIsOnGround(CharacterControl control) {
+            if(control.animationProgress.IsRunning(typeof(MoveUp))) {
+                return false;
+            }
+            if(control.RIGID_BODY.useGravity) {
+                if(control.SkinnedMeshAnimator.GetBool(HashManager.Instance.DicMainParams[TransitionParameter.Grounded])) {
+                    return true;
+                } 
+            }
+            return false;
         }
     }
 }

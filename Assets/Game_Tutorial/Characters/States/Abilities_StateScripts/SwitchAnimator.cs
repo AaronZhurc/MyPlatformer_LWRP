@@ -11,7 +11,7 @@ namespace Games_tutorial
         public RuntimeAnimatorController TargetAnimator;
         public override void OnEnter(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
-            
+            characterState.characterControl.RIGID_BODY.useGravity=true;
         }
 
         public override void OnExit(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
