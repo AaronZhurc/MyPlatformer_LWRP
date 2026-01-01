@@ -102,6 +102,13 @@ namespace Games_tutorial
                         info.isFinished=true;
                         //Destroy(info.gameObject);
                         info.GetComponent<PoolObject>().TurnOff();
+
+                        foreach(CharacterControl c in CharacterManager.Instance.Characters) {
+                            if(c.damageDetector.BlockedAttack == info) {
+                                c.damageDetector.BlockedAttack = null;
+                            }
+                        }
+
                         /*if(debug){
                             Debug.Log(this.name+"registered:"+stateInfo.normalizedTime);
                         }*/

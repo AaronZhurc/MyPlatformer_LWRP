@@ -141,8 +141,43 @@ namespace Games_tutorial
             CheckMarioStop();
         }
 
+        public bool IsFacingAttacker() {
+            Vector3 vec=control.damageDetector.Attacker.transform.position-control.transform.position;
+            if(vec.z < 0f) {
+                if(control.IsFacingForward()){
+                    return false;
+                } else {
+                    return true;
+                }
+            }else if(vec.z > 0f) {
+                if(control.IsFacingForward()){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        bool ForwardIsReversed() {
+            if(LatestMoveForward.MoveOnHit){
+                if(IsFacingAttacker()) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            if(LatestMoveForward.Speed > 0f) {
+                return false;
+            } else if(LatestMoveForward.Speed < 0f) {
+                return true;
+            }
+            return false;
+        }
+
         void CheckFrontBlocking(){
-            if(LatestMoveForward.Speed>0){
+            if(!ForwardIsReversed()){
                 FrontSpheresList=control.collisionSpheres.FrontSpheres;
                 DirBlock=1f;
                 foreach(GameObject s in control.collisionSpheres.BackSpheres){

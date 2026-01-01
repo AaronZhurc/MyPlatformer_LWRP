@@ -68,7 +68,7 @@ namespace Games_tutorial
             control.animationProgress.LockDirectionNextState=false;
             // control.animationProgress.BlockingObjs.Clear();
 
-            UpdateMoveOnHit(control);
+            //UpdateMoveOnHit(control);
         }
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
@@ -131,23 +131,23 @@ namespace Games_tutorial
             }
         }
 
-        void UpdateMoveOnHit(CharacterControl control){
-            if(!MoveOnHit){
-                return;
-            }
-            if(control.damageDetector.Attacker!=null){
-                Vector3 dir=control.transform.position-control.damageDetector.Attacker.transform.position;
-                if(dir.z>0f){
-                    if(Speed<0f){
-                        Speed*=-1f;
-                    }
-                }else if(dir.z<0f){
-                    if(Speed>0f){
-                        Speed*=-1f;
-                    }
-                }
-            }
-        }
+        // void UpdateMoveOnHit(CharacterControl control){
+        //     if(!MoveOnHit){
+        //         return;
+        //     }
+        //     if(control.damageDetector.Attacker!=null){
+        //         Vector3 dir=control.transform.position-control.damageDetector.Attacker.transform.position;
+        //         if(dir.z>0f){
+        //             if(Speed<0f){
+        //                 Speed*=-1f;
+        //             }
+        //         }else if(dir.z<0f){
+        //             if(Speed>0f){
+        //                 Speed*=-1f;
+        //             }
+        //         }
+        //     }
+        // }
 
         private void UpdateMomentum(CharacterControl control,AnimatorStateInfo stateInfo){           
             if(!control.animationProgress.RightSideIsBlocked()){
@@ -184,7 +184,16 @@ namespace Games_tutorial
         }
         private void ConstantMove(CharacterControl control, Animator animator, AnimatorStateInfo stateInfo){ //自动前进，比如出拳时的自动前进
             if(!IsBlocked(control,Speed,stateInfo)){
-                control.MoveForward(Speed,SpeedGraph.Evaluate(stateInfo.normalizedTime));
+                if(MoveOnHit) {
+                    if(!control.animationProgress.IsFacingAttacker()) {
+                        control.MoveForward(Speed,SpeedGraph.Evaluate(stateInfo.normalizedTime));
+                    }else{
+                        control.MoveForward(-Speed,SpeedGraph.Evaluate(stateInfo.normalizedTime));
+                    }
+                }
+                else {
+                    control.MoveForward(Speed,SpeedGraph.Evaluate(stateInfo.normalizedTime));
+                }
             }
             if(!control.MoveRight&&!control.MoveLeft){
                 animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Move],false);

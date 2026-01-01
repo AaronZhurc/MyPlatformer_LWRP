@@ -22,6 +22,7 @@ namespace Games_tutorial
         public CharacterControl Attacker;
         public TriggerDetector DamagedTrigger;
         public GameObject AttackingPart;
+        public AttackInfo BlockedAttack;
         
         private void Awake(){
             //DamegeTaken=0;
@@ -137,6 +138,25 @@ namespace Games_tutorial
                 return false;
             }
         }
+        bool IsBlocked(AttackInfo info) {
+            if(info == BlockedAttack) {
+                return true;
+            }
+            if(control.animationProgress.IsRunning(typeof(Block))) {
+                Vector3 dir = info.Attacker.transform.position - control.transform.position;
+                if(dir.z > 0f) {
+                    if(control.IsFacingForward()) {
+                        return true;
+                    }
+                }
+                else if(dir.z < 0f) {
+                    if(!control.IsFacingForward()) {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
         public void TakeDamage(AttackInfo info){
             if(IsDead()){
                 if(!info.RegisteredTargets.Contains(this.control)){
@@ -146,18 +166,9 @@ namespace Games_tutorial
                 
                 return;
             }
-            if(control.animationProgress.IsRunning(typeof(Block))) {
-                Vector3 dir = info.Attacker.transform.position - control.transform.position;
-                if(dir.z > 0f) {
-                    if(control.IsFacingForward()) {
-                        return;
-                    }
-                }
-                else if(dir.z < 0f) {
-                    if(!control.IsFacingForward()) {
-                        return;
-                    }
-                }
+            if(IsBlocked(info)) {
+                BlockedAttack = info;
+                return;
             }
             if(info.MustCollide) {
                     CameraManager.Instance.ShakeCamera(0.35f);
