@@ -33,6 +33,7 @@ namespace Games_tutorial
         NOT_RUN,
         BLOCKING,
         NOT_BLOCKING,
+        ATTACK_IS_BLOCKED,
     }
     [CreateAssetMenu(fileName = "Indexer", menuName = "Games/AbilityData/TransitionIndexer")]
     public class TransitionIndexer : StateData
@@ -287,6 +288,12 @@ namespace Games_tutorial
                         }
                     case TransitionConditionType.NOT_BLOCKING:{
                         if(control.Block){
+                            return false;
+                        }
+                        break;
+                    }
+                    case TransitionConditionType.ATTACK_IS_BLOCKED:{
+                        if(control.damageDetector.BlockedAttack==null){
                             return false;
                         }
                         break;

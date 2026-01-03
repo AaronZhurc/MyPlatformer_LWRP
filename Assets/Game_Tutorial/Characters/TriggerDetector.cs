@@ -26,6 +26,9 @@ namespace Games_tutorial
             CheckCollidingWeapons(col);
         }
         private void CheckCollidingBodyParts(Collider col){
+            if(control == null) {
+                return;
+            }
             if(control.RagdollParts.Contains(col)){ //不希望是自己的部分触碰
                 return;
             }
@@ -48,8 +51,35 @@ namespace Games_tutorial
         }
 
         void CheckCollidingWeapons(Collider col){
-            if(col.transform.root.gameObject.GetComponent<Weapon>()==null){
+            Weapon w=col.transform.root.gameObject.GetComponent<Weapon>();
+            if(w==null){
                 return;
+            }
+            if(w.IsThrown) {
+                if(w.Thrower != control) {
+                    AttackInfo info=new AttackInfo();
+                    info.CopyInfo(control.damageDetector.CrowbarThrow, control);
+
+                    control.damageDetector.DamagedTrigger=this;
+                    control.damageDetector.Attack=control.damageDetector.CrowbarThrow;
+                    control.damageDetector.Attacker=w.Thrower;
+                    control.damageDetector.AttackingPart=w.Thrower.RightHand_Attack;
+
+                    control.damageDetector.TakeDamage(info);
+
+                    if(w.FlyForward){
+                        w.transform.rotation=Quaternion.Euler(0f,90f,45f);
+                    } else {
+                        w.transform.rotation=Quaternion.Euler(0f,90f,-45f);
+                    }
+
+                    w.transform.parent=this.transform;
+                    Vector3 offset=this.transform.position-w.WeaponTip.transform.position;
+                    w.transform.position+=offset;
+
+                    w.IsThrown=false;
+                    return;
+                }
             }
             if(!control.animationProgress.CollidingWeapons.ContainsKey(this)){
                 control.animationProgress.CollidingWeapons.Add(this, new List<Collider>());

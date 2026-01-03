@@ -10,7 +10,8 @@ namespace Games_tutorial
         public float PickUpTiming;
         public override void OnEnter(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
-            
+            CharacterControl control=characterState.characterControl;
+            control.animationProgress.HoldingWeapon=control.animationProgress.GetTouchingWeapon();;
         }
 
         public override void OnExit(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
@@ -22,9 +23,8 @@ namespace Games_tutorial
         {
             CharacterControl control=characterState.characterControl;
             if(stateInfo.normalizedTime>PickUpTiming){
-                if(control.animationProgress.HoldingWeapon==null){
-                    Weapon w=control.animationProgress.GetTouchingWeapon();;
-                    characterState.characterControl.animationProgress.HoldingWeapon=w;
+                if(control.animationProgress.HoldingWeapon.control==null){
+                    Weapon w=control.animationProgress.HoldingWeapon;
                 
                     w.transform.parent=control.RightHand_Attack.transform;
                     w.transform.localPosition=w.CustomPosition;
@@ -32,6 +32,8 @@ namespace Games_tutorial
                 
                     w.control=control;
                     w.triggerDetector.control=control;
+
+                    w.RemoveWeaponFromDictionary(control);
                 }
             }
         }

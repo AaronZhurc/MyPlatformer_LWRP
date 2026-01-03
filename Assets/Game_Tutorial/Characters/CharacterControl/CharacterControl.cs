@@ -51,6 +51,7 @@ namespace Games_tutorial {
 
         public BoxCollider boxCollider;
         public NavMeshObstacle navMeshObstacle;
+        public InstaKill instaKill;
 
         [Header("Gravity")]
         // public float GravityMultipilier; //坠落时获得动量
@@ -90,6 +91,7 @@ namespace Games_tutorial {
             aiController = GetComponentInChildren<AIController>();
             boxCollider = GetComponent<BoxCollider>();
             navMeshObstacle = GetComponent<NavMeshObstacle>();
+            instaKill = GetComponentInChildren<InstaKill>();
 
             // bool SwitchBack=false;
             // if(!IsFacingForward()){

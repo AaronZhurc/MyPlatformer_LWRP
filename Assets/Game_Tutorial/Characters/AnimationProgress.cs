@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace Games_tutorial
 {
@@ -47,8 +48,7 @@ namespace Games_tutorial
         public bool CanWallJump;
         public bool CheckWallBlock;
         public List<CharacterControl> MarioStompTargets=new List<CharacterControl>();
-        public Attack MarioStampAttack;
-
+        
         [Header("UpdateBoxCollider")]
         // public bool UpdatingBoxCollider;
         public bool UpdatingSpheres;
@@ -127,11 +127,20 @@ namespace Games_tutorial
                 //Checking while jump up
                 if(control.RIGID_BODY.velocity.y > 0.001f) {
                     CheckUpBlocking();
-                    if(UpBlockingObjs.Count > 0) {
-                        control.RIGID_BODY.velocity=new Vector3(control.RIGID_BODY.velocity.x,0f,control.RIGID_BODY.velocity.z);
+                    foreach(KeyValuePair<GameObject,GameObject> data in UpBlockingObjs) {
+                        CharacterControl c=CharacterManager.Instance.GetCharacter(data.Value.transform.root.gameObject);
+
+                        if(c == null) {
+                            NullifyUpVelocity();
+                            break;
+                        } else {
+                            if(control.transform.position.y + control.boxCollider.center.y < c.transform.position.y) {
+                                NullifyUpVelocity();
+                                break;
+                            }
+                        }
                     }
-                }
-                else {
+                } else {
                     if(UpBlockingObjs.Count != 0) {
                         UpBlockingObjs.Clear();
                     }
@@ -139,6 +148,10 @@ namespace Games_tutorial
             }
 
             CheckMarioStop();
+        }
+
+        void NullifyUpVelocity() {
+            control.RIGID_BODY.velocity=new Vector3(control.RIGID_BODY.velocity.x,0f,control.RIGID_BODY.velocity.z);
         }
 
         public bool IsFacingAttacker() {
@@ -213,11 +226,11 @@ namespace Games_tutorial
 
                 foreach(CharacterControl c in MarioStompTargets) {
                     AttackInfo info=new AttackInfo();
-                    info.CopyInfo(MarioStampAttack, control);
+                    info.CopyInfo(control.damageDetector.MarioStampAttack, control);
 
                     int index=Random.Range(0,c.RagdollParts.Count);
                     c.damageDetector.DamagedTrigger=c.RagdollParts[index].GetComponent<TriggerDetector>();
-                    c.damageDetector.Attack=MarioStampAttack;
+                    c.damageDetector.Attack=control.damageDetector.MarioStampAttack;
                     c.damageDetector.Attacker=control;
                     c.damageDetector.AttackingPart=control.RightFoot_Attack;
 
@@ -233,10 +246,12 @@ namespace Games_tutorial
                 foreach(KeyValuePair<GameObject,GameObject> data in DownBlockingObjs) {
                     CharacterControl c=CharacterManager.Instance.GetCharacter(data.Value.transform.root.gameObject);
                     if(c != null) {
-                        if(c != control) {
-                            if(!MarioStompTargets.Contains(c)) {
-                                MarioStompTargets.Add(c);
-                            }                        
+                        if(c.boxCollider.center.y + c.transform.position.y < control.transform.position.y) {
+                            if(c != control) {
+                                if(!MarioStompTargets.Contains(c)) {
+                                    MarioStompTargets.Add(c);
+                                }                        
+                            }
                         }
                     }
                 }
@@ -369,8 +384,17 @@ namespace Games_tutorial
             // }
             // return false;
 
-            foreach(KeyValuePair<StateData, int> data in CurrentRunningAbilities) {
-                if(data.Key.name.Contains(str)) {
+            // foreach(KeyValuePair<StateData, int> data in CurrentRunningAbilities) {
+            //     if(data.Key.name.Contains(str)) {
+            //         return true;
+            //     }
+            // }
+            // return false;
+
+            AnimatorClipInfo[] arr=control.SkinnedMeshAnimator.GetCurrentAnimatorClipInfo(0);
+
+            foreach(AnimatorClipInfo clipInfo in arr) {
+                if(clipInfo.clip.name.Contains(str)) {
                     return true;
                 }
             }

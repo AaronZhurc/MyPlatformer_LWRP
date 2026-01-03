@@ -23,6 +23,15 @@ namespace Games_tutorial
         public TriggerDetector DamagedTrigger;
         public GameObject AttackingPart;
         public AttackInfo BlockedAttack;
+
+        [Header("Insta Kill")]
+        public RuntimeAnimatorController Assassination_A;
+        public RuntimeAnimatorController Assassination_B;
+
+        [Header("Attack")]
+        public Attack MarioStampAttack;
+        public Attack CrowbarThrow;
+
         
         private void Awake(){
             //DamegeTaken=0;
@@ -139,7 +148,7 @@ namespace Games_tutorial
             }
         }
         bool IsBlocked(AttackInfo info) {
-            if(info == BlockedAttack) {
+            if(info == BlockedAttack && BlockedAttack != null) {
                 return true;
             }
             if(control.animationProgress.IsRunning(typeof(Block))) {
@@ -148,10 +157,9 @@ namespace Games_tutorial
                     if(control.IsFacingForward()) {
                         return true;
                     }
-                }
-                else if(dir.z < 0f) {
+                } else if(dir.z < 0f) {
                     if(!control.IsFacingForward()) {
-                        return false;
+                        return true;
                     }
                 }
             }
@@ -237,6 +245,32 @@ namespace Games_tutorial
 
         public void DeathBySpikes(){
             control.damageDetector.DamagedTrigger = null; //不对身体部位添加任何力
+            hp =0f;
+        }
+
+        public void DeathByInstaKill(CharacterControl attacker){
+            control.animationProgress.CurrentRunningAbilities.Clear();
+            attacker.animationProgress.CurrentRunningAbilities.Clear();
+
+            control.RIGID_BODY.useGravity=false;
+            control.boxCollider.enabled=false;
+            control.SkinnedMeshAnimator.runtimeAnimatorController=Assassination_B;
+
+            attacker.RIGID_BODY.useGravity=false;
+            attacker.boxCollider.enabled=false;
+            attacker.SkinnedMeshAnimator.runtimeAnimatorController=Assassination_A;
+            
+            Vector3 dir=control.transform.position-attacker.transform.position;
+
+            if(dir.z < 0f) {
+                attacker.FaceForward(false);
+            }else if(dir.z>0f){
+                attacker.FaceForward(true);
+            }
+            
+            control.transform.LookAt(control.transform.position+(attacker.transform.forward*5f),Vector3.up);
+            control.transform.position=attacker.transform.position+attacker.transform.forward*0.45f;
+            
             hp =0f;
         }
     }
