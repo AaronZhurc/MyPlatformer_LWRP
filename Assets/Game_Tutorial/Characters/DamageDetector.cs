@@ -125,15 +125,15 @@ namespace Games_tutorial
         }
 
         private bool IsInLethalRange(AttackInfo info){
-            foreach(Collider c in control.RagdollParts){
+            foreach(Collider c in control.BodyParts){
                 float dist=Vector3.SqrMagnitude(c.transform.position-info.Attacker.transform.position);
                 //Debug.Log(this.gameObject.name+" dist: "+dist.ToString());
                 if(dist<=info.LethalRange){
                     control.damageDetector.Attack=info.AttackAbility;
                     control.damageDetector.Attacker=info.Attacker;
 
-                    int index=UnityEngine.Random.Range(0, control.RagdollParts.Count);
-                    control.damageDetector.DamagedTrigger=control.RagdollParts[index].GetComponent<TriggerDetector>();
+                    int index=UnityEngine.Random.Range(0, control.BodyParts.Count);
+                    control.damageDetector.DamagedTrigger=control.BodyParts[index].GetComponent<TriggerDetector>();
                     return true;
                 }
             }
@@ -216,18 +216,21 @@ namespace Games_tutorial
             control.animationProgress.CurrentRunningAbilities.Clear();
 
             if(IsDead()){
-                control.animationProgress.RagdollTriggered=true;
+                control.ProcDic[CharacterProc.RAGDOLL_ON]();
 
-                control.GetComponent<BoxCollider>().enabled=false;
+                //control.animationProgress.RagdollTriggered=true;
+                //control.TurnOnRagdoll();
+
+                //control.GetComponent<BoxCollider>().enabled=false;
                 //control.ledgeChecker.GetComponent<BoxCollider>().enabled=false;
-                control.ledgeChecker.Collider1.GetComponent<BoxCollider>().enabled=false;
-                control.ledgeChecker.Collider2.GetComponent<BoxCollider>().enabled=false;
-                control.RIGID_BODY.useGravity=false;
+                
+                // control.ProcDic[CharacterProc.LEDGE_COLLIDERS_OFF]();
+                // control.RIGID_BODY.useGravity=false;
 
-                if(control.aiController!=null){
-                    control.aiController.gameObject.SetActive(false);
-                    control.navMeshObstacle.enabled=false;
-                }
+                // if(control.aiController!=null){
+                //     control.aiController.gameObject.SetActive(false);
+                //     control.navMeshObstacle.enabled=false;
+                // }
             }else{
                 int rand=UnityEngine.Random.Range(0,HitReactionList.Count);
                 control.SkinnedMeshAnimator.runtimeAnimatorController=null; //多次击中时有用

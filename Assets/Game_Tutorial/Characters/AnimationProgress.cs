@@ -11,7 +11,7 @@ namespace Games_tutorial
         public bool CameraShaken;
 
         public List<PoolObjectType> PoolObjectList=new List<PoolObjectType>(); 
-        public bool RagdollTriggered;
+        
         // public float MaxPressTime;
         public MoveForward LatestMoveForward;
         public MoveUp LatestMoveUp;
@@ -38,6 +38,7 @@ namespace Games_tutorial
         public Dictionary<GameObject,GameObject> FrontBlockingObjs=new Dictionary<GameObject,GameObject>(); //<where ray from, where ray to>
         public Dictionary<GameObject,GameObject> UpBlockingObjs=new Dictionary<GameObject,GameObject>(); //<where ray from, where ray to>
         public Dictionary<GameObject,GameObject> DownBlockingObjs=new Dictionary<GameObject,GameObject>(); 
+        public Vector3 CollidingPoint=new Vector3();
 
         [Header("AirControl")]
         public bool Jumped;
@@ -209,7 +210,14 @@ namespace Games_tutorial
             }
 
             foreach(GameObject o in FrontSpheresList) {
-                CheckRaycastCollision(o,this.transform.forward*DirBlock,LatestMoveForward.BlockDistance,FrontBlockingObjs);
+                //CheckRaycastCollision(o,this.transform.forward*DirBlock,LatestMoveForward.BlockDistance,FrontBlockingObjs);
+                GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,this.transform.forward*DirBlock,LatestMoveForward.BlockDistance,ref control.animationProgress.CollidingPoint);
+                if(blockingObj != null) {
+                   AddBlockingObjToDic(FrontBlockingObjs,o,blockingObj);
+                }
+                else {
+                    RemoveBlockingObjFromDic(FrontBlockingObjs,o);
+                }
             }
         }
 
@@ -228,8 +236,8 @@ namespace Games_tutorial
                     AttackInfo info=new AttackInfo();
                     info.CopyInfo(control.damageDetector.MarioStampAttack, control);
 
-                    int index=Random.Range(0,c.RagdollParts.Count);
-                    c.damageDetector.DamagedTrigger=c.RagdollParts[index].GetComponent<TriggerDetector>();
+                    int index=Random.Range(0,c.BodyParts.Count);
+                    c.damageDetector.DamagedTrigger=c.BodyParts[index].GetComponent<TriggerDetector>();
                     c.damageDetector.Attack=control.damageDetector.MarioStampAttack;
                     c.damageDetector.Attacker=control;
                     c.damageDetector.AttackingPart=control.RightFoot_Attack;
@@ -258,96 +266,46 @@ namespace Games_tutorial
             }
         }
 
+        void AddBlockingObjToDic(Dictionary<GameObject,GameObject> dic,GameObject key,GameObject value) {
+            if(dic.ContainsKey(key)) {
+                dic[key]=value;
+            }
+            else {
+                dic.Add(key,value);
+            }
+        }
+
+        void RemoveBlockingObjFromDic(Dictionary<GameObject,GameObject> dic,GameObject key) {
+            if(dic.ContainsKey(key)) {
+                dic.Remove(key);
+            }
+        }
+
         void CheckDownBlocking(){
             foreach(GameObject o in control.collisionSpheres.BottomSpheres) {
-                CheckRaycastCollision(o,Vector3.down,0.1f,DownBlockingObjs);
+                //CheckRaycastCollision(o,Vector3.down,0.1f,DownBlockingObjs);
+                GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,Vector3.down,0.1f,ref control.animationProgress.CollidingPoint);
+                if(blockingObj != null) {
+                   AddBlockingObjToDic(DownBlockingObjs,o,blockingObj);
+                }
+                else {
+                    RemoveBlockingObjFromDic(DownBlockingObjs,o);
+                }
             }
         }
 
         void CheckUpBlocking(){
             foreach(GameObject o in control.collisionSpheres.UpSpheres) {
-                CheckRaycastCollision(o,this.transform.up,0.3f,UpBlockingObjs);
-            }
-        }
-
-
-        void CheckRaycastCollision(GameObject obj,Vector3 dir,float BlockDistance,Dictionary<GameObject,GameObject> BlockingObjDic){
-            /*Self=false;*/
-            //Draw debug line
-            Debug.DrawRay(obj.transform.position,dir*BlockDistance,Color.yellow);
-
-            //Check collision
-            RaycastHit hit;
-            if(Physics.Raycast(obj.transform.position,dir,out hit,BlockDistance)){ //使用射线检测距离
-                if(!IsBodyPart(hit.collider) //如果不是身体一部分
-                    &&!IsIgnoreCharacter(hit.collider)
-                    // &&!Ledge.IsLedge(hit.collider.gameObject)
-                    &&!Ledge.IsLedgeChecker(hit.collider.gameObject)
-                    &&!Weapon.IsWeapon(hit.collider.gameObject)
-                    &&!TrapSpikes.IsTrap(hit.collider.gameObject)){ 
-                    if(BlockingObjDic.ContainsKey(obj)){
-                        BlockingObjDic[obj] = hit.collider.transform.root.gameObject;
-                    }else{
-                        BlockingObjDic.Add(obj, hit.collider.transform.root.gameObject);
-                    }
-                }else{
-                    if(BlockingObjDic.ContainsKey(obj)){
-                        BlockingObjDic.Remove(obj);
-                    }
+                //CheckRaycastCollision(o,this.transform.up,0.3f,UpBlockingObjs);
+                GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,this.transform.up,0.1f,ref control.animationProgress.CollidingPoint);
+                if(blockingObj != null) {
+                   AddBlockingObjToDic(UpBlockingObjs,o,blockingObj);
                 }
-            }else{
-                if(BlockingObjDic.ContainsKey(obj)){
-                    BlockingObjDic.Remove(obj);
+                else {
+                    RemoveBlockingObjFromDic(UpBlockingObjs,o);
                 }
             }
-        }
 
-        bool IsIgnoreCharacter(Collider col){
-            if(!IsIgnoreCharacterTime){
-                return false;
-            }else{
-                CharacterControl blockingChar=CharacterManager.Instance.GetCharacter(col.transform.root.gameObject);
-                if(blockingChar==null){
-                    return false;
-                }
-                if(blockingChar==control){
-                    return false;
-                }
-                else{
-                    return true;
-                }
-            }
-        }
-
-        bool IsBodyPart(Collider col){
-            // CharacterControl control=col.transform.root.GetComponent<CharacterControl>();
-            // if(control==null){ //如果不是身体一部分
-            //     return false;
-            // }
-            // if(control.gameObject==col.gameObject){ //如果collider是角色控件自己，即不是身体部分，而是root
-            //     return false;
-            // }
-            // if(control.RagdollParts.Contains(col)){ //在布娃娃部件列表内，即是自己的部件
-            //     return true;
-            // }
-            // return false;
-
-            if(col.transform.root.gameObject==control.gameObject){ //如果是同一部件
-                return true;
-            }
-
-            //如果不是，就可能是敌人
-            CharacterControl target=CharacterManager.Instance.GetCharacter(col.transform.root.gameObject);
-            
-            if(target==null){ //无CharacterControl，非身体部位
-                return false;
-            }
-
-            if(target.damageDetector.IsDead()){ //确认是否是死人
-                return true;
-            }else{
-                return false;
-            }
         }
 
         public bool IsRunning(System.Type type) {

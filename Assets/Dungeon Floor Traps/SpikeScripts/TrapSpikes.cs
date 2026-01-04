@@ -103,7 +103,7 @@ namespace Games_tutorial
                 s.Retract();
             }
             foreach(CharacterControl control in ListSpikeVictims){
-                control.TurnOnRagdoll();
+                control.ProcDic[CharacterProc.RAGDOLL_ON]();
             }
             
             yield return new WaitForSeconds(1f);

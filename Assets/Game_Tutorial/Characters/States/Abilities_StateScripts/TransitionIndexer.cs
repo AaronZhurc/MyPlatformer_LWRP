@@ -120,7 +120,7 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.GRABBING_LEDGE: {
-                            if(!control.ledgeChecker.IsGrabbingLedge) {
+                            if(!control.BoolDic[BoolData.GRABBING_LEDGE]()) {
                                 return false;
                             }
                             break;
@@ -193,7 +193,7 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.NOT_GRABBING_LEDGE: {
-                            if(control.ledgeChecker.IsGrabbingLedge) {
+                            if(control.BoolDic[BoolData.GRABBING_LEDGE]()) {
                                 return false;
                             }
                             break;
@@ -213,13 +213,19 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.DOUBLE_TAP_UP: {
-                            if(!control.manualInput.DoubleTaps.Contains(InputKeyType.KEY_MOVE_UP)) {
+                            if(!control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
+                                return false;
+                            }
+                            if(!control.BoolDic[BoolData.DOUBLETAP_UP]()) {
                                 return false;
                             }
                             break;
                         }
                     case TransitionConditionType.DOUBLE_TAP_DOWN: {
-                            if(!control.manualInput.DoubleTaps.Contains(InputKeyType.KEY_MOVE_DOWN)) {
+                            if(!control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
+                                return false;
+                            }
+                            if(!control.BoolDic[BoolData.DOUBLETAP_DOWN]()) {
                                 return false;
                             }
                             break;

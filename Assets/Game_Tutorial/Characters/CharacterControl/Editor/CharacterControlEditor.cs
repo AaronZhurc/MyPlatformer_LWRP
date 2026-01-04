@@ -15,7 +15,7 @@ namespace Games_tutorial
             CharacterControl control=(CharacterControl)target;
 
             if(GUILayout.Button("Setup Ragdollparts (BodyParts)")){
-                control.SetRagdollParts();
+                control.SetupBodyParts();
             }
         }
     }

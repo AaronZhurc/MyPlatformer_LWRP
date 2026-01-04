@@ -56,7 +56,7 @@ namespace Games_tutorial
                             if(Math.Abs(control.RIGID_BODY.velocity.y)<0.001f){
                                 control.animationProgress.Ground=c.otherCollider.transform.root.gameObject;
                                 control.animationProgress.LandingPosition=new Vector3(0f,c.point.y,c.point.z);
-                                if (control.manualInput.enabled)
+                                if (control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT))
                                 {
                                     TESTING_SPHERE.transform.position = control.animationProgress.LandingPosition;
                                 }
@@ -69,21 +69,34 @@ namespace Games_tutorial
 
             if(control.RIGID_BODY.velocity.y<0f){//只有下落时才检查
                 foreach(GameObject o in control.collisionSpheres.BottomSpheres){
-                    Debug.DrawRay(o.transform.position,-Vector3.up*Distance,Color.yellow);
-                    RaycastHit hit;
-                    if(Physics.Raycast(o.transform.position,-Vector3.up,out hit,Distance)){ //使用射线检测距离
-                        if(!control.RagdollParts.Contains(hit.collider)
-                        //    &&!Ledge.IsLedge(hit.collider.gameObject)
-                           &&!Ledge.IsLedgeChecker(hit.collider.gameObject)
-                           &&!Ledge.IsCharacter(hit.collider.gameObject)){
-                            control.animationProgress.Ground=hit.collider.transform.root.gameObject;
-                            control.animationProgress.LandingPosition=new Vector3(0f,hit.point.y,hit.point.z);
-                            if (control.manualInput.enabled){
+                    // Debug.DrawRay(o.transform.position,-Vector3.up*Distance,Color.yellow);
+                    // RaycastHit hit;
+                    GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,-Vector3.up,Distance,ref control.animationProgress.CollidingPoint);
+                    if(blockingObj != null) {
+                        CharacterControl c=CharacterManager.Instance.GetCharacter(blockingObj.transform.root.gameObject);
+                        if(c==null) {
+                            control.animationProgress.Ground=blockingObj.transform.root.gameObject;
+                            control.animationProgress.LandingPosition=new Vector3(0f,control.animationProgress.CollidingPoint.y,control.animationProgress.CollidingPoint.z);
+                            if (control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)){
                                 TESTING_SPHERE.transform.position = control.animationProgress.LandingPosition;
                             }
                             return true;
                         }
+                        
                     }
+                    // if(Physics.Raycast(o.transform.position,-Vector3.up,out hit,Distance)){ //使用射线检测距离
+                    //     if(!control.BodyParts.Contains(hit.collider)
+                    //     //    &&!Ledge.IsLedge(hit.collider.gameObject)
+                    //        &&!Ledge.IsLedgeChecker(hit.collider.gameObject)
+                    //        &&!Ledge.IsCharacter(hit.collider.gameObject)){
+                    //         control.animationProgress.Ground=hit.collider.transform.root.gameObject;
+                    //         control.animationProgress.LandingPosition=new Vector3(0f,hit.point.y,hit.point.z);
+                    //         if (control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)){
+                    //             TESTING_SPHERE.transform.position = control.animationProgress.LandingPosition;
+                    //         }
+                    //         return true;
+                    //     }
+                    // }
                 }
             }
             control.animationProgress.Ground=null;

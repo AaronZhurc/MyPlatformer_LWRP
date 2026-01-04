@@ -12,7 +12,7 @@ namespace Games_tutorial
         }
 
         private void FixedUpdate() {
-            if(control.manualInput.enabled) {
+            if(control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
                 return;
             }
             if(!control.SkinnedMeshAnimator.GetBool(HashManager.Instance.DicMainParams[TransitionParameter.Grounded])) {
@@ -27,7 +27,7 @@ namespace Games_tutorial
                         continue;
                     }
 
-                    if(!c.manualInput.enabled) {
+                    if(!control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
                         continue;
                     }
 

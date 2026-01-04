@@ -35,23 +35,26 @@ namespace Games_tutorial {
         public bool Block;
 
         [Header("SubComponents")]
-        public ManualInput manualInput;
-        public LedgeChecker ledgeChecker;
+        //public ManualInput manualInput;
+        //public LedgeChecker ledgeChecker;
         public AnimationProgress animationProgress;
         public AIProgress aiProgress;
-
         public DamageDetector damageDetector;
-
         //public GameObject ColliderEdgePrefab;
         public CollisionSpheres collisionSpheres;
-
         public AIController aiController;
-
         //public List<Collider> CollidingParts=new List<Collider>(); //存储所有接触的身体部位 //我们希望其位于每个触发器所在的位置
-
         public BoxCollider boxCollider;
         public NavMeshObstacle navMeshObstacle;
         public InstaKill instaKill;
+        public Dictionary<SubComponents,SubComponent> SubComponentsDic=new Dictionary<SubComponents,SubComponent>();
+
+        public Dictionary<BoolData,GetBool> BoolDic=new Dictionary<BoolData,GetBool>();
+        public delegate bool GetBool();
+
+        public Dictionary<CharacterProc,CharacterProcDel> ProcDic=new Dictionary<CharacterProc,CharacterProcDel>();
+
+        public delegate void CharacterProcDel();
 
         [Header("Gravity")]
         // public float GravityMultipilier; //坠落时获得动量
@@ -62,7 +65,7 @@ namespace Games_tutorial {
         public PlayableCharacterType playableCharacterType;
         public Animator SkinnedMeshAnimator;
         public Material material;
-        public List<Collider> RagdollParts = new List<Collider>();
+        public List<Collider> BodyParts = new List<Collider>();
         public GameObject LeftHand_Attack;
         public GameObject RightHand_Attack;
         public GameObject LeftFoot_Attack;
@@ -83,8 +86,8 @@ namespace Games_tutorial {
         }
 
         private void Awake() {
-            manualInput = GetComponent<ManualInput>();
-            ledgeChecker = GetComponentInChildren<LedgeChecker>();
+            //manualInput = GetComponent<ManualInput>();
+            //ledgeChecker = GetComponentInChildren<LedgeChecker>();
             animationProgress = GetComponent<AnimationProgress>();
             aiProgress = GetComponentInChildren<AIProgress>();
             damageDetector = GetComponentInChildren<DamageDetector>();
@@ -154,16 +157,16 @@ namespace Games_tutorial {
         }*/
 
 
-        public void SetRagdollParts() {
-            RagdollParts.Clear();
+        public void SetupBodyParts() {
+            BodyParts.Clear();
 
             Collider[] colliders = this.gameObject.GetComponentsInChildren<Collider>();
 
             foreach(Collider c in colliders) {
-                if(c.gameObject.GetComponent<LedgeChecker>() == null) {
+                if(c.gameObject.GetComponent<LedgeChecker>() == null && c.gameObject.GetComponent<LedgeCollider>()==null) {
                     if(c.gameObject != this.gameObject) { //我们不想将外面的盒子collider作为trigger，我们希望其能与物理环境进行交互
                         c.isTrigger = true; //此时collider会穿过其他物理对象，除非我们能够准确知道其他对象何时解除collider
-                        RagdollParts.Add(c);
+                        BodyParts.Add(c);
                         c.attachedRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
                         c.attachedRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
@@ -181,47 +184,13 @@ namespace Games_tutorial {
             }
         }
 
-        public void TurnOnRagdoll() {
-            //改变层
-            Transform[] arr = GetComponentsInChildren<Transform>();
-            foreach(Transform t in arr) {
-                t.gameObject.layer = LayerMask.NameToLayer(RB_Layers.DEADBODY.ToString());
-            }
-
-            //设置身体部件位置
-            foreach(Collider c in RagdollParts) {
-                TriggerDetector det = c.GetComponent<TriggerDetector>();
-                det.LastPosition = c.gameObject.transform.localPosition;
-                det.LastRotation = c.gameObject.transform.localRotation;
-            }
-
-            //关闭animator/avator/etc
-            RIGID_BODY.useGravity = false; //关闭重力
-            RIGID_BODY.velocity = Vector3.zero;
-            this.gameObject.GetComponent<BoxCollider>().enabled = false; //此时我们关闭盒子collider
-            SkinnedMeshAnimator.enabled = false;
-            SkinnedMeshAnimator.avatar = null;
-
-            //打开ragdoll
-            foreach(Collider c in RagdollParts) {
-                c.isTrigger = false; //转换为物理对象
-
-
-                TriggerDetector det = c.GetComponent<TriggerDetector>();
-                c.transform.localPosition = det.LastPosition;
-                c.transform.localRotation = det.LastRotation;
-
-                c.attachedRigidbody.velocity = Vector3.zero; //对于陷阱，需要在这里关闭速度以不添加力
-            }
-
-            AddForceToDamagePart(false);
-        }
+        
 
         public void AddForceToDamagePart(bool zeroVelocity) {
             //add force
             if(damageDetector.DamagedTrigger != null) {
                 if(zeroVelocity) {
-                    foreach(Collider c in RagdollParts) {
+                    foreach(Collider c in BodyParts) {
                         c.attachedRigidbody.velocity = Vector3.zero;
                     }
                 }
@@ -258,7 +227,25 @@ namespace Games_tutorial {
             }
         }
 
+        void UpdateSubComponent(SubComponents type) {
+            if(SubComponentsDic.ContainsKey(type)) {
+                SubComponentsDic[type].OnUpdate();
+            }
+        }
+
+        void FixedUpdateSubComponent(SubComponents type) {
+            if(SubComponentsDic.ContainsKey(type)) {
+                SubComponentsDic[type].OnFixedUpdate();
+            }
+        }
+
+        private void Update() {
+            UpdateSubComponent(SubComponents.MANUALINPUT);
+        }
+
         private void FixedUpdate() {
+            FixedUpdateSubComponent(SubComponents.LEDGECHECKER);
+            FixedUpdateSubComponent(SubComponents.RAGDOLL);
             if(!animationProgress.CancelPull) {
                 // if(RIGID_BODY.velocity.y<0f){ //向下
                 //     RIGID_BODY.velocity+=-Vector3.up*GravityMultipilier;
@@ -282,10 +269,10 @@ namespace Games_tutorial {
                 }
             }
 
-            if(animationProgress.RagdollTriggered) {
-                TurnOnRagdoll();
-                animationProgress.RagdollTriggered = false;
-            }
+            // if(animationProgress.RagdollTriggered) {
+            //     TurnOnRagdoll();
+            //     animationProgress.RagdollTriggered = false;
+            // }
 
             //slow down wallslide
             if(animationProgress.MaxFallVelocity.y != 0f) {
@@ -336,7 +323,7 @@ namespace Games_tutorial {
         }
 
         public Collider GetBodyPart(string name) {
-            foreach(Collider c in RagdollParts) {
+            foreach(Collider c in BodyParts) {
                 if(c.name.Contains(name)) {
                     return c;
                 }

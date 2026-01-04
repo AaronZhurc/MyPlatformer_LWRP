@@ -29,7 +29,7 @@ namespace Games_tutorial
             if(control == null) {
                 return;
             }
-            if(control.RagdollParts.Contains(col)){ //不希望是自己的部分触碰
+            if(control.BodyParts.Contains(col)){ //不希望是自己的部分触碰
                 return;
             }
             CharacterControl attacker=col.transform.root.GetComponent<CharacterControl>();

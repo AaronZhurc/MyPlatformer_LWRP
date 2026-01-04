@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Games_tutorial
 {
-    public class LedgeChecker:MonoBehaviour {
-        public bool IsGrabbingLedge;
+    public class LedgeChecker:SubComponent {
+        public bool isGrabbingLedge;
         // public Ledge GrabbedLedge;
         public Vector3 LedgeCalibration = new Vector3();
         // Ledge CheckLedge = null;
-        CharacterControl control;
+        //CharacterControl control;
 
         public LedgeCollider Collider1;
         public LedgeCollider Collider2;
@@ -31,13 +31,22 @@ namespace Games_tutorial
         //     // }
         // }
         private void Start() {
-            IsGrabbingLedge = false;
-            control = GetComponentInParent<CharacterControl>();
+            isGrabbingLedge = false;
+            
+            control.SubComponentsDic.Add(SubComponents.LEDGECHECKER,this);
+            //control = GetComponentInParent<CharacterControl>();
+            control.ProcDic.Add(CharacterProc.LEDGE_COLLIDERS_OFF,LedgeCollidersOff);
+            control.BoolDic.Add(BoolData.GRABBING_LEDGE,IsGrabbingLedge);
         }
-        private void FixedUpdate() {
+
+        public override void OnUpdate() {
+            throw new System.NotImplementedException();
+        }
+
+        public override void OnFixedUpdate() {
             if(control.SkinnedMeshAnimator.GetBool(HashManager.Instance.DicMainParams[TransitionParameter.Grounded])) {
                 if(control.RIGID_BODY.useGravity) {
-                    IsGrabbingLedge = false;
+                    isGrabbingLedge = false;
                 }
             }
             if(IsLedgeGrabCondition()) {
@@ -67,15 +76,15 @@ namespace Games_tutorial
                         }
                     }
                     else {
-                        IsGrabbingLedge = false;
+                        isGrabbingLedge = false;
                     }
                 }
             }
             else {
-                IsGrabbingLedge = false;
+                isGrabbingLedge = false;
             }
             if(Collider1.CollidedObjects.Count == 0) {
-                IsGrabbingLedge = false;
+                isGrabbingLedge = false;
             }
         }
 
@@ -84,10 +93,10 @@ namespace Games_tutorial
             if(boxCollider == null) {
                 return false;
             }
-            if(IsGrabbingLedge) {
+            if(isGrabbingLedge) {
                 return false;
             }
-            IsGrabbingLedge = true;
+            isGrabbingLedge = true;
             control.RIGID_BODY.useGravity = false;
             control.RIGID_BODY.velocity = Vector3.zero;
 
@@ -116,6 +125,15 @@ namespace Games_tutorial
                 control.RIGID_BODY.MovePosition(platformEdge + new Vector3(0f, LedgeCalibration.y, -LedgeCalibration.z));
             }
             return true;
+        }
+
+        public void LedgeCollidersOff() {
+            Collider1.GetComponent<BoxCollider>().enabled=false;
+            Collider2.GetComponent<BoxCollider>().enabled=false;
+        }
+
+        public bool IsGrabbingLedge() {
+            return isGrabbingLedge;
         }
     }
 }

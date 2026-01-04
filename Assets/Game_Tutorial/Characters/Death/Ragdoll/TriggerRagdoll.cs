@@ -15,16 +15,17 @@ namespace Games_tutorial
         }
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {   
-            // CharacterControl control=characterState.GetCharacterControl(animator);
+            CharacterControl control=characterState.characterControl;
             
             if(stateInfo.normalizedTime>=TriggerTiming){
-                if(!characterState.characterControl.animationProgress.RagdollTriggered){
-                    //control.TurnOnRagdoll();
-                    if(characterState.characterControl.SkinnedMeshAnimator.enabled){
-                        characterState.characterControl.animationProgress.RagdollTriggered=true;
-                    }
+                // if(!characterState.characterControl.animationProgress.RagdollTriggered){
+                //     //control.TurnOnRagdoll();
+                //     if(characterState.characterControl.SkinnedMeshAnimator.enabled){
+                //         characterState.characterControl.animationProgress.RagdollTriggered=true;
+                //     }
                     
-                }   
+                // }   
+                control.ProcDic[CharacterProc.RAGDOLL_ON]();
             }
         }
         public override void OnExit(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)

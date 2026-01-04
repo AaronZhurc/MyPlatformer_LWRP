@@ -4,86 +4,91 @@ using UnityEngine;
 
 namespace Games_tutorial
 {
-    public class ManualInput : MonoBehaviour
+    public class ManualInput : SubComponent
     {
-        private CharacterControl characterControl;
 
         public List<InputKeyType> DoubleTaps=new List<InputKeyType>();
         private List<InputKeyType> UpKeys=new List<InputKeyType>();
         private Dictionary<InputKeyType, float> DicDoubleTapTimings=new Dictionary<InputKeyType, float>();
 
-        private void Awake(){
-            characterControl=this.gameObject.GetComponent<CharacterControl>();
+        void Start() {
+            control.SubComponentsDic.Add(SubComponents.MANUALINPUT,this);
+
+            control.BoolDic.Add(BoolData.DOUBLETAP_UP, IsDoubleTap_Up);
+            control.BoolDic.Add(BoolData.DOUBLETAP_DOWN, IsDoubleTap_Down);
         }
 
+        public override void OnFixedUpdate() {
+            throw new System.NotImplementedException();
+        }
         // Update is called once per frame
-        void Update()
+        public override void OnUpdate()
         {
             if (VirtualInputManager.Instance.Turbo){
-                characterControl.Turbo=true;
+                control.Turbo=true;
                 ProcDoubleTap(InputKeyType.KEY_TURBO);
             }else{
-                characterControl.Turbo=false;
+                control.Turbo=false;
                 RemoveDoubleTap(InputKeyType.KEY_TURBO);
             }
             if (VirtualInputManager.Instance.MoveUp){
-                characterControl.MoveUp=true;
+                control.MoveUp=true;
                 ProcDoubleTap(InputKeyType.KEY_MOVE_UP);
             }else{
-                characterControl.MoveUp=false;
+                control.MoveUp=false;
                 RemoveDoubleTap(InputKeyType.KEY_MOVE_UP);
             }
             if (VirtualInputManager.Instance.MoveDown){
-                characterControl.MoveDown=true;
+                control.MoveDown=true;
                 ProcDoubleTap(InputKeyType.KEY_MOVE_DOWN);
             }else{
-                characterControl.MoveDown=false;
+                control.MoveDown=false;
                 RemoveDoubleTap(InputKeyType.KEY_MOVE_DOWN);
             }
             if (VirtualInputManager.Instance.MoveRight){
-                characterControl.MoveRight=true;
+                control.MoveRight=true;
                 ProcDoubleTap(InputKeyType.KEY_MOVE_RIGHT);
             }else{
-                characterControl.MoveRight=false;
+                control.MoveRight=false;
                 RemoveDoubleTap(InputKeyType.KEY_MOVE_RIGHT);
             }
             if (VirtualInputManager.Instance.MoveLeft){
-                characterControl.MoveLeft=true;
+                control.MoveLeft=true;
                 ProcDoubleTap(InputKeyType.KEY_MOVE_LEFT);
             }else{
-                characterControl.MoveLeft=false;
+                control.MoveLeft=false;
                 RemoveDoubleTap(InputKeyType.KEY_MOVE_LEFT);
             }
             if (VirtualInputManager.Instance.Jump){
-                characterControl.Jump=true;
+                control.Jump=true;
                 ProcDoubleTap(InputKeyType.KEY_JUMP);
             }else{
-                characterControl.Jump=false;
+                control.Jump=false;
                 RemoveDoubleTap(InputKeyType.KEY_JUMP);
             }
             if(VirtualInputManager.Instance.Attack){
-                characterControl.Attack=true;
+                control.Attack=true;
                 ProcDoubleTap(InputKeyType.KEY_ATTACK);
             }else{
-                characterControl.Attack=false;
+                control.Attack=false;
                 RemoveDoubleTap(InputKeyType.KEY_ATTACK);
             }
             
             if(VirtualInputManager.Instance.Block){
-                characterControl.Block=true;
+                control.Block=true;
                 ProcDoubleTap(InputKeyType.KEY_BLOCK);
             }else{
-                characterControl.Block=false;
+                control.Block=false;
                 RemoveDoubleTap(InputKeyType.KEY_BLOCK);
             }
 
             //double tap running
             if(DoubleTaps.Contains(InputKeyType.KEY_MOVE_RIGHT) || DoubleTaps.Contains(InputKeyType.KEY_MOVE_LEFT)) {
-                characterControl.Turbo = true;
+                control.Turbo = true;
             }
 
             //double tap running turn 
-            if(characterControl.MoveLeft&&characterControl.MoveRight){
+            if(control.MoveLeft&&control.MoveRight){
                 if(DoubleTaps.Contains(InputKeyType.KEY_MOVE_RIGHT)||DoubleTaps.Contains(InputKeyType.KEY_MOVE_LEFT)){
                     if(!DoubleTaps.Contains(InputKeyType.KEY_MOVE_RIGHT)){
                         DoubleTaps.Add(InputKeyType.KEY_MOVE_RIGHT);
@@ -111,6 +116,25 @@ namespace Games_tutorial
                 DicDoubleTapTimings[keyType]=Time.time+0.18f;
             }
         }
+
+        public bool IsDoubleTap_Up() {
+            if(DoubleTaps.Contains(InputKeyType.KEY_MOVE_UP)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        public bool IsDoubleTap_Down() {
+            if(DoubleTaps.Contains(InputKeyType.KEY_MOVE_DOWN)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
 
         void RemoveDoubleTap(InputKeyType keyType){
             if(DoubleTaps.Contains(keyType)){
