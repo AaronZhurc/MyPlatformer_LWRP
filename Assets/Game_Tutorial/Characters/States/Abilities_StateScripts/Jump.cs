@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Games_tutorial.Datasets;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -22,24 +23,26 @@ namespace Games_tutorial
         {
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
-            control.animationProgress.Jumped=false;
+            control.AIR_CONTROL.SetBool((int)AirControlBool.JUMPED,false);
             if(JumpTiming==0f){
                 control.RIGID_BODY.AddForce(Vector3.up*JumpForce);
-                control.animationProgress.Jumped=true;
+                control.AIR_CONTROL.SetBool((int)AirControlBool.JUMPED,true);
                 //isJumped=true;
             }
             //animator.SetBool(TransitionParameter.Grounded.ToString(),false);
-            control.animationProgress.CancelPull=CancelPull;
+            control.AIR_CONTROL.SetBool((int)AirControlBool.CANCEL_PULL,CancelPull);
         }
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
+
+            bool jumped=control.AIR_CONTROL.GetBool((int)AirControlBool.JUMPED);
             //control.GravityMultipilier=Gravity.Evaluate(stateInfo.normalizedTime);
             //control.PullMultipilier=Pull.Evaluate(stateInfo.normalizedTime);
-            if(!control.animationProgress.Jumped&&stateInfo.normalizedTime>=JumpTiming){
+            if(!jumped&&stateInfo.normalizedTime>=JumpTiming){
                 control.RIGID_BODY.AddForce(Vector3.up*JumpForce);
-                control.animationProgress.Jumped=true;
+                control.AIR_CONTROL.SetBool((int)AirControlBool.JUMPED,true);
             }
         }
         public override void OnExit(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)

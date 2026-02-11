@@ -33,7 +33,7 @@ namespace Games_tutorial
         private void Start() {
             isGrabbingLedge = false;
             
-            control.SubComponentsDic.Add(SubComponents.LEDGECHECKER,this);
+            subComponentProcessor.ComponentsDic.Add(SubComponents.LEDGECHECKER,this);
             //control = GetComponentInParent<CharacterControl>();
             control.ProcDic.Add(CharacterProc.LEDGE_COLLIDERS_OFF,LedgeCollidersOff);
             control.BoolDic.Add(BoolData.GRABBING_LEDGE,IsGrabbingLedge);

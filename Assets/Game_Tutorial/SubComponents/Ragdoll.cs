@@ -9,7 +9,7 @@ namespace Games_tutorial
         public bool RagdollTriggered=false;
 
         void Start() {
-            control.SubComponentsDic.Add(SubComponents.RAGDOLL,this);
+            subComponentProcessor.ComponentsDic.Add(SubComponents.RAGDOLL,this);
             control.ProcDic.Add(CharacterProc.RAGDOLL_ON, TurnOnRagdoll);
         }
         public override void OnFixedUpdate() {

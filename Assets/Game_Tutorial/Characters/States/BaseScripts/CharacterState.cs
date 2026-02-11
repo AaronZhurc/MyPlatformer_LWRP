@@ -9,6 +9,8 @@ namespace Games_tutorial
         public CharacterControl characterControl;
         [Space(10)]
         public List<StateData> ListAbilityData=new List<StateData>();
+
+        public BlockingObjData BLOCKING_DATA => characterControl.subComponentProcessor.blockingData;
         
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

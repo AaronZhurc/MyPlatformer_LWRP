@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters;
+using Games_tutorial.Datasets;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.PlayerLoop;
@@ -35,6 +36,7 @@ namespace Games_tutorial {
         public bool Block;
 
         [Header("SubComponents")]
+        public SubComponentProcessor subComponentProcessor;
         //public ManualInput manualInput;
         //public LedgeChecker ledgeChecker;
         public AnimationProgress animationProgress;
@@ -47,10 +49,18 @@ namespace Games_tutorial {
         public BoxCollider boxCollider;
         public NavMeshObstacle navMeshObstacle;
         public InstaKill instaKill;
-        public Dictionary<SubComponents,SubComponent> SubComponentsDic=new Dictionary<SubComponents,SubComponent>();
+        
+
+        public DataProcessor dataProcessor;
+
+        public BlockingObjData BLOCKING_DATA => subComponentProcessor.blockingData;
+        public Dataset AIR_CONTROL => dataProcessor.GetDataset(typeof(AirControl));
 
         public Dictionary<BoolData,GetBool> BoolDic=new Dictionary<BoolData,GetBool>();
         public delegate bool GetBool();
+
+        // public Dictionary<ListData,GetList> ListDic =new Dictionary<ListData, GetList>();
+        // public delegate List<GameObject> GetList();
 
         public Dictionary<CharacterProc,CharacterProcDel> ProcDic=new Dictionary<CharacterProc,CharacterProcDel>();
 
@@ -86,6 +96,7 @@ namespace Games_tutorial {
         }
 
         private void Awake() {
+            subComponentProcessor=GetComponentInChildren<SubComponentProcessor>();
             //manualInput = GetComponent<ManualInput>();
             //ledgeChecker = GetComponentInChildren<LedgeChecker>();
             animationProgress = GetComponent<AnimationProgress>();
@@ -106,6 +117,10 @@ namespace Games_tutorial {
             collisionSpheres = GetComponentInChildren<CollisionSpheres>();
             collisionSpheres.owner = this;
             collisionSpheres.SetColliderSpheres();
+
+            dataProcessor=this.gameObject.GetComponentInChildren<DataProcessor>();
+            System.Type[] arr={typeof(AirControl),typeof(SomeDataset)};
+            dataProcessor.InitializeSets(arr);
 
             // if(SwitchBack){
             //     FaceForward(false);
@@ -227,26 +242,18 @@ namespace Games_tutorial {
             }
         }
 
-        void UpdateSubComponent(SubComponents type) {
-            if(SubComponentsDic.ContainsKey(type)) {
-                SubComponentsDic[type].OnUpdate();
-            }
-        }
-
-        void FixedUpdateSubComponent(SubComponents type) {
-            if(SubComponentsDic.ContainsKey(type)) {
-                SubComponentsDic[type].OnFixedUpdate();
-            }
-        }
+        
 
         private void Update() {
-            UpdateSubComponent(SubComponents.MANUALINPUT);
+            subComponentProcessor.UpdateSubComponents();
         }
 
         private void FixedUpdate() {
-            FixedUpdateSubComponent(SubComponents.LEDGECHECKER);
-            FixedUpdateSubComponent(SubComponents.RAGDOLL);
-            if(!animationProgress.CancelPull) {
+            subComponentProcessor.FixedUpdateSubComponents();
+            
+
+            bool cancelPull=AIR_CONTROL.GetBool((int)AirControlBool.CANCEL_PULL);
+            if(!cancelPull) {
                 // if(RIGID_BODY.velocity.y<0f){ //向下
                 //     RIGID_BODY.velocity+=-Vector3.up*GravityMultipilier;
                 // }
@@ -274,10 +281,12 @@ namespace Games_tutorial {
             //     animationProgress.RagdollTriggered = false;
             // }
 
+            Vector3 maxFallVelocity = AIR_CONTROL.GetVector3((int)AirControlVector3.MAX_FALL_VELOCITY);
+
             //slow down wallslide
-            if(animationProgress.MaxFallVelocity.y != 0f) {
-                if(RIGID_BODY.velocity.y <= animationProgress.MaxFallVelocity.y) {
-                    RIGID_BODY.velocity = animationProgress.MaxFallVelocity;
+            if(maxFallVelocity.y != 0f) {
+                if(RIGID_BODY.velocity.y <= maxFallVelocity.y) {
+                    RIGID_BODY.velocity = maxFallVelocity;
                 }
             }
         }

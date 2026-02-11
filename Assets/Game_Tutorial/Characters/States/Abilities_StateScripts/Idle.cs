@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Games_tutorial.Datasets;
 using UnityEngine;
 
 namespace Games_tutorial
@@ -17,7 +18,9 @@ namespace Games_tutorial
             CharacterControl control=characterState.characterControl;
             control.animationProgress.disallowEarlyTurn=false;
 
-            control.animationProgress.FrontBlockingObjs.Clear();
+            // control.animationProgress.FrontBlockingObjs.Clear();
+            // characterState.characterControl.ProcDic[CharacterProc.CLEAR_FRONTBLOCKINGOBJDIC]();
+            characterState.BLOCKING_DATA.ClearFrontBlockingObjDic();
         }
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
@@ -31,14 +34,15 @@ namespace Games_tutorial
             // }
 
             if(control.Jump){
-                if(!control.animationProgress.Jumped){
+                bool jumped=control.AIR_CONTROL.GetBool((int)AirControlBool.JUMPED);
+                if(!jumped){
                     if(control.animationProgress.Ground!=null){
                         animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Jump],true);
                     }
                 }
             }else{
                 if(!control.animationProgress.IsRunning(typeof(Jump))){
-                    control.animationProgress.Jumped=false;
+                    control.AIR_CONTROL.SetBool((int)AirControlBool.JUMPED,false);
                 }
             }
             if(control.MoveLeft&&control.MoveRight){

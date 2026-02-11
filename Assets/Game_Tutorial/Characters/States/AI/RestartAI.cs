@@ -41,11 +41,12 @@ namespace Games_tutorial
             }
 
             //path blocked
-            if(control.animationProgress.FrontBlockingObjs.Count==0){
+            if(characterState.BLOCKING_DATA.FrontBlockingDicCount==0){
                 control.aiProgress.BlockCharacter=null;
             }else{
-                foreach(KeyValuePair<GameObject,GameObject> data in control.animationProgress.FrontBlockingObjs){
-                    CharacterControl blockingChar=CharacterManager.Instance.GetCharacter(data.Value);
+            List<GameObject> objs=characterState.BLOCKING_DATA.GetFrontBlockingCharacterList();
+                foreach(GameObject o in objs) {
+                    CharacterControl blockingChar=CharacterManager.Instance.GetCharacter(o);
                     if(blockingChar!=null){
                         control.aiProgress.BlockCharacter=blockingChar;
                         break;
@@ -53,6 +54,9 @@ namespace Games_tutorial
                         control.aiProgress.BlockCharacter=null;
                     }
                 }
+                // foreach(KeyValuePair<GameObject,GameObject> data in control.animationProgress.FrontBlockingObjs){
+                    
+                // }
             }
             if(control.aiProgress.BlockCharacter!=null){
                 if(control.animationProgress.Ground!=null){
