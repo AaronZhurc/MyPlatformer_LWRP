@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Games_tutorial.Datasets;
 using UnityEngine;
 namespace Games_tutorial
 {
@@ -13,21 +14,23 @@ namespace Games_tutorial
 
             control.MoveLeft=false;
             control.MoveRight=false;
-            control.animationProgress.AirMomentum=0f;
 
-            control.animationProgress.MaxFallVelocity=MaxFallVelocity;
-            control.animationProgress.CanWallJump=false;
+            control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,0f);
+
+            control.AIR_CONTROL.SetVector3((int)AirControlVector3.MAX_FALL_VELOCITY,MaxFallVelocity);
+
+            control.AIR_CONTROL.SetBool((int)AirControlBool.CAN_WALL_JUMP,false);;
         }
 
         public override void OnExit(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
-            characterState.characterControl.animationProgress.MaxFallVelocity=Vector3.zero;
+            characterState.characterControl.AIR_CONTROL.SetVector3((int)AirControlVector3.MAX_FALL_VELOCITY,Vector3.zero);
         }
 
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
             if(!characterState.characterControl.Jump){
-                characterState.characterControl.animationProgress.CanWallJump=true;
+                characterState.characterControl.AIR_CONTROL.SetBool((int)AirControlBool.CAN_WALL_JUMP,true);
             }
         }
     }

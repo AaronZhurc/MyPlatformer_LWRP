@@ -56,10 +56,10 @@ namespace Games_tutorial
                             if(Math.Abs(control.RIGID_BODY.velocity.y)<0.001f){
                                 control.animationProgress.Ground=c.otherCollider.transform.root.gameObject;
                                 control.animationProgress.LandingPosition=new Vector3(0f,c.point.y,c.point.z);
-                                if (control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT))
-                                {
-                                    TESTING_SPHERE.transform.position = control.animationProgress.LandingPosition;
-                                }
+                                // if (control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT))
+                                // {
+                                //     TESTING_SPHERE.transform.position = control.animationProgress.LandingPosition;
+                                // }
                             return true;
                             }
                         }
@@ -77,9 +77,9 @@ namespace Games_tutorial
                         if(c==null) {
                             control.animationProgress.Ground=blockingObj.transform.root.gameObject;
                             control.animationProgress.LandingPosition=new Vector3(0f,control.animationProgress.CollidingPoint.y,control.animationProgress.CollidingPoint.z);
-                            if (control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)){
-                                TESTING_SPHERE.transform.position = control.animationProgress.LandingPosition;
-                            }
+                            // if (control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)){
+                            //     TESTING_SPHERE.transform.position = control.animationProgress.LandingPosition;
+                            // }
                             return true;
                         }
                         

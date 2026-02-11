@@ -28,7 +28,7 @@ namespace Games_tutorial
                 // if(!UpIsBlocked(control)){
                 //     control.transform.Translate(Vector3.up*Speed*SpeedGraph.Evaluate(stateInfo.normalizedTime)*Time.deltaTime);
                 // }
-                if(control.animationProgress.UpBlockingObjs.Count==0) {
+                if(characterState.BLOCKING_DATA.UpBlockingDicCount==0) {
                     control.transform.Translate(Vector3.up * Speed * SpeedGraph.Evaluate(stateInfo.normalizedTime) * Time.deltaTime);
                 }
             }

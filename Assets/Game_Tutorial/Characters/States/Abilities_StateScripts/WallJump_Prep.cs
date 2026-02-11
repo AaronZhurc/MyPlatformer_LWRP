@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Games_tutorial.Datasets;
 using UnityEngine;
 
 namespace Games_tutorial
@@ -14,7 +15,7 @@ namespace Games_tutorial
             
             control.MoveLeft=false;
             control.MoveRight=false;
-            control.animationProgress.AirMomentum=0f;
+            control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,0f);
 
             control.RIGID_BODY.velocity=Vector3.zero;
             

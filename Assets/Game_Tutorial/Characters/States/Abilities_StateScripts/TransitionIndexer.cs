@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters;
+using Games_tutorial.Datasets;
 using UnityEngine;
 
 namespace Games_tutorial
@@ -54,7 +55,7 @@ namespace Games_tutorial
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
             
-            control.animationProgress.CheckWallBlock=StartCheckingWallBlock();
+            control.AIR_CONTROL.SetBool((int)AirControlBool.CHECK_WALL_BLOCK,StartCheckingWallBlock());
             
             if(animator.GetInteger(HashManager.Instance.DicMainParams[TransitionParameter.TransitionIndex]) == 0){
                 if(MakeTransition(control)){
@@ -187,7 +188,8 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.CAN_WALL_JUMP: {
-                            if(!control.animationProgress.CanWallJump) {
+                            bool canWallJump=control.AIR_CONTROL.GetBool((int)AirControlBool.CAN_WALL_JUMP);
+                            if(!canWallJump) {
                                 return false;
                             }
                             break;
@@ -199,21 +201,25 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.MOVING_TO_BLOCKING_OBJ: {
-                            foreach(KeyValuePair<GameObject, GameObject> data in control.animationProgress.FrontBlockingObjs) {
-                                if((data.Value.transform.position - control.transform.position).z > 0f) {
-                                    Vector3 dir = data.Value.transform.position - control.transform.position;
+                            List<GameObject> objs=control.BLOCKING_DATA.GetFrontBlockingObjList();
+                            foreach(GameObject o in objs){
+                                // if((o.transform.position - control.transform.position).z > 0f) {
+                                    Vector3 dir = o.transform.position - control.transform.position;
                                     if(dir.z > 0f && !control.MoveRight) {
                                         return false;
                                     }
                                     if(dir.z < 0f && !control.MoveLeft) {
                                         return false;
                                     }
-                                }
+                                // }
                             }
+                            // foreach(KeyValuePair<GameObject, GameObject> data in control.animationProgress.FrontBlockingObjs) {
+                                
+                            // }
                             break;
                         }
                     case TransitionConditionType.DOUBLE_TAP_UP: {
-                            if(!control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
+                            if(!control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
                                 return false;
                             }
                             if(!control.BoolDic[BoolData.DOUBLETAP_UP]()) {
@@ -222,7 +228,7 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.DOUBLE_TAP_DOWN: {
-                            if(!control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
+                            if(!control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
                                 return false;
                             }
                             if(!control.BoolDic[BoolData.DOUBLETAP_DOWN]()) {

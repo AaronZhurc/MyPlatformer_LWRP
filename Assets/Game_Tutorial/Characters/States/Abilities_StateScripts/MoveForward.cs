@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Games_tutorial.Datasets;
 using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
@@ -58,9 +59,9 @@ namespace Games_tutorial
             //control.animationProgress.AirMomentum=0f;
             if(StartingMomentum>0.001f){
                 if(control.IsFacingForward()){
-                    control.animationProgress.AirMomentum=StartingMomentum;
+                    control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM, StartingMomentum);
                 }else{
-                    control.animationProgress.AirMomentum=-StartingMomentum;
+                    control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM, -StartingMomentum);
                 }
             }
 
@@ -127,7 +128,7 @@ namespace Games_tutorial
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
             if(ClearMomentumOnExit){
-                control.animationProgress.AirMomentum=0f;
+                control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,0f);
             }
         }
 
@@ -150,40 +151,45 @@ namespace Games_tutorial
         // }
 
         private void UpdateMomentum(CharacterControl control,AnimatorStateInfo stateInfo){           
-            if(!control.animationProgress.RightSideIsBlocked()){
+            // current momentum
+            float momentum=control.AIR_CONTROL.GetFloat((int)AirControlFloat.AIR_MOMENTUM);
+            float speed=SpeedGraph.Evaluate(stateInfo.normalizedTime)*Speed*Time.deltaTime;
+
+            if(!control.BLOCKING_DATA.RightSideBlocked()){
                 if(control.MoveRight){
-                    control.animationProgress.AirMomentum+=SpeedGraph.Evaluate(stateInfo.normalizedTime)*Speed*Time.deltaTime;
+                    control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,momentum+speed);
                 }
             }
-            if(!control.animationProgress.LeftSideIsBlocked()){
-                if(control.MoveLeft){
-                    control.animationProgress.AirMomentum-=SpeedGraph.Evaluate(stateInfo.normalizedTime)*Speed*Time.deltaTime;
+            if(!control.BLOCKING_DATA.LeftSideBlocked()){
+                if(control.MoveLeft){ 
+                   control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,momentum-speed);
                 }
             }
 
-            if(control.animationProgress.RightSideIsBlocked()||control.animationProgress.LeftSideIsBlocked()){
+            if(control.BLOCKING_DATA.RightSideBlocked()||control.BLOCKING_DATA.LeftSideBlocked()){
                 //如果两遍都被阻挡，动量下降到0
-                control.animationProgress.AirMomentum=Mathf.Lerp(control.animationProgress.AirMomentum,0f,Time.deltaTime*1.5f);
+                float lerped=Mathf.Lerp(momentum,0f,Time.deltaTime*1.5f);
+                control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,lerped);
             }
 
-            if(Mathf.Abs(control.animationProgress.AirMomentum)>=MaxMomentum){
-                if(control.animationProgress.AirMomentum>0f){
-                    control.animationProgress.AirMomentum=MaxMomentum;
-                }else if(control.animationProgress.AirMomentum<0f){
-                    control.animationProgress.AirMomentum=-MaxMomentum;
+            if(Mathf.Abs(momentum   )>=MaxMomentum){
+                if(momentum>0f){
+                    control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,MaxMomentum);
+                }else if(momentum<0f){
+                    control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,-MaxMomentum);
                 }
             }
-            if(control.animationProgress.AirMomentum>0f){
+            if(momentum>0f){
                 control.FaceForward(true);
-            }else if(control.animationProgress.AirMomentum<0f){
+            }else if(momentum<0f){
                 control.FaceForward(false);
             }
-            if(!IsBlocked(control,Speed,stateInfo)){
-                control.MoveForward(Speed,Mathf.Abs(control.animationProgress.AirMomentum));
+            if(!IsBlocked(control)){
+                control.MoveForward(Speed,Mathf.Abs(momentum));
             }
         }
         private void ConstantMove(CharacterControl control, Animator animator, AnimatorStateInfo stateInfo){ //自动前进，比如出拳时的自动前进
-            if(!IsBlocked(control,Speed,stateInfo)){
+            if(!IsBlocked(control)){
                 if(MoveOnHit) {
                     if(!control.animationProgress.IsFacingAttacker()) {
                         control.MoveForward(Speed,SpeedGraph.Evaluate(stateInfo.normalizedTime));
@@ -212,12 +218,12 @@ namespace Games_tutorial
                 return;
             }
             if (control.MoveRight){
-                if(!IsBlocked(control,Speed,stateInfo)){ 
+                if(!IsBlocked(control)){ 
                     control.MoveForward(Speed,SpeedGraph.Evaluate(stateInfo.normalizedTime)); //为了能让前跳不匀速，我们让其乘上速度曲线
                 }
             }
             if (control.MoveLeft){
-                if(!IsBlocked(control,Speed,stateInfo)){
+                if(!IsBlocked(control)){
                    control.MoveForward(Speed,SpeedGraph.Evaluate(stateInfo.normalizedTime)); //注意此时角色已经旋转，所以不需要负号  
                 }
             }
@@ -248,7 +254,7 @@ namespace Games_tutorial
         }
            
 
-        bool IsBlocked(CharacterControl control, float speed, AnimatorStateInfo stateInfo){
+        bool IsBlocked(CharacterControl control){
             // if(speed>0){
             //     SpheresList=control.collisionSpheres.FrontSpheres;
             //     DirBlock=0.3f;
@@ -284,7 +290,7 @@ namespace Games_tutorial
             // control.animationProgress.BlockingObj=null;
             // return false;
 
-            if(control.animationProgress.FrontBlockingObjs.Count!=0){
+            if(control.BLOCKING_DATA.FrontBlockingDicCount!=0){
                 return true;
             }else{
                 return false;
