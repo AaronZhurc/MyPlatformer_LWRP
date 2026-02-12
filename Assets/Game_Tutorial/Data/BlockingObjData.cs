@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Games_tutorial
 {
     [System.Serializable]
-    public class BlockingObjData : MonoBehaviour
+    public class BlockingObjData
     {
         public int FrontBlockingDicCount;
         public int UpBlockingDicCount;

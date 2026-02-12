@@ -102,7 +102,7 @@ namespace Games_tutorial
         }
 
         public void RemoveWeaponFromDictionary(CharacterControl c) {
-            foreach (Collider col in c.BodyParts)
+            foreach (Collider col in c.RAGDOLL_DATA.BodyParts)
             {
                 TriggerDetector t=col.GetComponent<TriggerDetector>();
                 

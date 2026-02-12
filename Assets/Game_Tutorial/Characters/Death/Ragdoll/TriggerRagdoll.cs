@@ -15,7 +15,7 @@ namespace Games_tutorial
         }
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {   
-            CharacterControl control=characterState.characterControl;
+            //CharacterControl control=characterState.characterControl;
             
             if(stateInfo.normalizedTime>=TriggerTiming){
                 // if(!characterState.characterControl.animationProgress.RagdollTriggered){
@@ -25,7 +25,7 @@ namespace Games_tutorial
                 //     }
                     
                 // }   
-                control.ProcDic[CharacterProc.RAGDOLL_ON]();
+                characterState.RAGDOLL_DATA.RagdollTriggered=true;
             }
         }
         public override void OnExit(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)

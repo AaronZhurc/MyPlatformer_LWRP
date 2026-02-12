@@ -6,31 +6,40 @@ namespace Games_tutorial
 {
     public class SubComponentProcessor : MonoBehaviour
     {
-        public Dictionary<SubComponents,SubComponent> ComponentsDic=new Dictionary<SubComponents,SubComponent>();
+        public Dictionary<SubComponentType,SubComponent> ComponentsDic=new Dictionary<SubComponentType,SubComponent>();
         public CharacterControl control;
 
         public BlockingObjData blockingData;
+        public LedgeGrabData ledgeGrabData;
+        public RagdollData ragdollData;
+        public ManualInputData manualInputData;
+        public BoxColliderData boxColliderData;
+        public VerticalVelocityData verticalVelocityData;
+        public DamageData damageData;
 
         void Awake() {
             control=GetComponentInParent<CharacterControl>();
         }
         public void FixedUpdateSubComponents() {
-            FixedUpdateSubComponent(SubComponents.LEDGECHECKER);
-            FixedUpdateSubComponent(SubComponents.RAGDOLL);
-            FixedUpdateSubComponent(SubComponents.BLOCKINGOBJECTS);
+            FixedUpdateSubComponent(SubComponentType.LEDGE_CHECKER);
+            FixedUpdateSubComponent(SubComponentType.RAGDOLL);
+            FixedUpdateSubComponent(SubComponentType.BLOCKING_OBJECTS);
+            FixedUpdateSubComponent(SubComponentType.BOX_COLLIDER_UPDATER);
+            FixedUpdateSubComponent(SubComponentType.VERTICAL_VELOCITY);
         }
 
         public void UpdateSubComponents() {
-            UpdateSubComponent(SubComponents.MANUALINPUT);
+            UpdateSubComponent(SubComponentType.MANUAL_INPUT);
+            UpdateSubComponent(SubComponentType.DAMAGE_DETECTOR);
         }
 
-        void UpdateSubComponent(SubComponents type) {
+        void UpdateSubComponent(SubComponentType type) {
             if(ComponentsDic.ContainsKey(type)) {
                 ComponentsDic[type].OnUpdate();
             }
         }
 
-        void FixedUpdateSubComponent(SubComponents type) {
+        void FixedUpdateSubComponent(SubComponentType type) {
             if(ComponentsDic.ContainsKey(type)) {
                 ComponentsDic[type].OnFixedUpdate();
             }

@@ -85,7 +85,7 @@ namespace Games_tutorial
                 return false;
             }
 
-            if(target.damageDetector.IsDead()){ //确认是否是死人
+            if(target.DAMAGE_DATA.IsDead()){ //确认是否是死人
                 return true;
             }else{
                 return false;

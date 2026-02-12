@@ -121,7 +121,7 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.GRABBING_LEDGE: {
-                            if(!control.BoolDic[BoolData.GRABBING_LEDGE]()) {
+                            if(!control.LEDGE_GRAB_DATA.isGrabbingLedge) {
                                 return false;
                             }
                             break;
@@ -195,7 +195,7 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.NOT_GRABBING_LEDGE: {
-                            if(control.BoolDic[BoolData.GRABBING_LEDGE]()) {
+                            if(control.LEDGE_GRAB_DATA.isGrabbingLedge) {
                                 return false;
                             }
                             break;
@@ -219,19 +219,19 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.DOUBLE_TAP_UP: {
-                            if(!control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
+                            if(!control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponentType.MANUAL_INPUT)) {
                                 return false;
                             }
-                            if(!control.BoolDic[BoolData.DOUBLETAP_UP]()) {
+                            if(!control.MANUAL_INPUT_DATA.DoubleTapUp()) {
                                 return false;
                             }
                             break;
                         }
                     case TransitionConditionType.DOUBLE_TAP_DOWN: {
-                            if(!control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
+                            if(!control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponentType.MANUAL_INPUT)) {
                                 return false;
                             }
-                            if(!control.BoolDic[BoolData.DOUBLETAP_DOWN]()) {
+                            if(!control.MANUAL_INPUT_DATA.DoubleTapDown()) {
                                 return false;
                             }
                             break;
@@ -305,7 +305,7 @@ namespace Games_tutorial
                         break;
                     }
                     case TransitionConditionType.ATTACK_IS_BLOCKED:{
-                        if(control.damageDetector.BlockedAttack==null){
+                        if(control.DAMAGE_DATA.BlockedAttack==null){
                             return false;
                         }
                         break;

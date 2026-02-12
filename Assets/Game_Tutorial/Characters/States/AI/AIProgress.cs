@@ -37,7 +37,7 @@ namespace Games_tutorial
         }
 
         public bool TargetIsDead(){
-            if(CharacterManager.Instance.GetCharacter(control.aiProgress.pathfindingAgent.target).damageDetector.IsDead()){
+            if(CharacterManager.Instance.GetCharacter(control.aiProgress.pathfindingAgent.target).DAMAGE_DATA.IsDead()){
                 return true;
             }else{
                 return false;

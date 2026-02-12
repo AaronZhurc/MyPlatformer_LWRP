@@ -23,27 +23,27 @@ namespace Games_tutorial
             CharacterControl control = characterState.characterControl;
             // control.animationProgress.UpdatingBoxCollider=true;
 
-            control.animationProgress.TargetSize = TargetSize;
-            control.animationProgress.Size_Speed = SizeUpdateSpeed;
-            control.animationProgress.TargetCenter = TargetCenter;
-            control.animationProgress.Center_Speed = CenterUpdateSpeed;
+            characterState.BOX_COLLIDER_DATA.TargetSize = TargetSize;
+            characterState.BOX_COLLIDER_DATA.Size_Update_Speed = SizeUpdateSpeed;
+            characterState.BOX_COLLIDER_DATA.TargetCenter = TargetCenter;
+            characterState.BOX_COLLIDER_DATA.Center_Update_Speed = CenterUpdateSpeed;
 
             if(stateInfo.IsName(LandingState)) {
-                characterState.characterControl.animationProgress.IsLanding = true;
+                characterState.BOX_COLLIDER_DATA.IsLanding = true;
             }
         }
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo) {
             if(stateInfo.IsName(ClimbingState)) {
                 if(stateInfo.normalizedTime > 0.7f) {
                     if(animator.GetBool(HashManager.Instance.DicMainParams[TransitionParameter.Grounded]) == true) {
-                        characterState.characterControl.animationProgress.IsLanding = true;
+                        characterState.BOX_COLLIDER_DATA.IsLanding = true;
                     }
                     else {
-                        characterState.characterControl.animationProgress.IsLanding = false;
+                        characterState.BOX_COLLIDER_DATA.IsLanding = false;
                     }
                 }
                 else {
-                    characterState.characterControl.animationProgress.IsLanding = false;
+                    characterState.BOX_COLLIDER_DATA.IsLanding = false;
                 }
             }
         }
@@ -54,7 +54,7 @@ namespace Games_tutorial
             //     control.animationProgress.UpdatingBoxCollider=false;
             // }
             if(stateInfo.IsName(LandingState)||stateInfo.IsName(ClimbingState)) {
-                characterState.characterControl.animationProgress.IsLanding = false;
+                characterState.BOX_COLLIDER_DATA.IsLanding = false;
             }
         }
     }

@@ -43,18 +43,6 @@ namespace Games_tutorial
         // public Vector3 MaxFallVelocity;
         // public bool CanWallJump;
         // public bool CheckWallBlock;
-       
-        
-        [Header("UpdateBoxCollider")]
-        // public bool UpdatingBoxCollider;
-        public bool UpdatingSpheres;
-        public Vector3 TargetSize;
-        public float Size_Speed;
-        public Vector3 TargetCenter;
-        public float Center_Speed;
-        public Vector3 LandingPosition;
-        public bool IsLanding;
-
 
         [Header("Transition")]
         public bool LockTransition;
@@ -114,7 +102,7 @@ namespace Games_tutorial
         }
 
         public bool IsFacingAttacker() {
-            Vector3 vec=control.damageDetector.Attacker.transform.position-control.transform.position;
+            Vector3 vec=control.DAMAGE_DATA.Attacker.transform.position-control.transform.position;
             if(vec.z < 0f) {
                 if(control.IsFacingForward()){
                     return false;

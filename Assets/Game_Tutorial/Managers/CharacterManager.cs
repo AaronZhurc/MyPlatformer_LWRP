@@ -38,7 +38,7 @@ namespace Games_tutorial
 
         public CharacterControl GetPlayableCharacter(){
             foreach(CharacterControl control in Characters){
-                if(control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
+                if(control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponentType.MANUAL_INPUT)) {
                     return control;
                 }
                 // ManualInput manualInput=control.GetComponentInChildren<ManualInput>();

@@ -9,7 +9,7 @@ namespace Games_tutorial
         public CharacterSelect characterSelect;
         private string objName;
 
-        private void Start(){
+        IEnumerator Start(){
             switch(characterSelect.SelectedCharacterType){
                 case PlayableCharacterType.WHITE:
                 objName="HitMan_White";
@@ -23,10 +23,12 @@ namespace Games_tutorial
             obj.transform.position=this.transform.position;
             GetComponent<MeshRenderer>().enabled=false;
 
+            yield return new WaitForEndOfFrame();
+
             Cinemachine.CinemachineVirtualCamera[] arr=GameObject.FindObjectsOfType<Cinemachine.CinemachineVirtualCamera>();
             foreach(Cinemachine.CinemachineVirtualCamera v in arr){
                 CharacterControl control=CharacterManager.Instance.GetCharacter(characterSelect.SelectedCharacterType);
-                Collider target=control.GetBodyPart("Spine1");
+                Collider target=control.RAGDOLL_DATA.GetBody("Spine1");
                 v.LookAt=target.transform;
                 v.Follow=target.transform;
             }

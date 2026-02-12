@@ -54,17 +54,23 @@ namespace Games_tutorial {
         public DataProcessor dataProcessor;
 
         public BlockingObjData BLOCKING_DATA => subComponentProcessor.blockingData;
-        public Dataset AIR_CONTROL => dataProcessor.GetDataset(typeof(AirControl));
+        public LedgeGrabData LEDGE_GRAB_DATA => subComponentProcessor.ledgeGrabData;
+        public RagdollData RAGDOLL_DATA => subComponentProcessor.ragdollData;
+        public ManualInputData MANUAL_INPUT_DATA => subComponentProcessor.manualInputData;
+        public BoxColliderData BOX_COLLIDER_DATA => subComponentProcessor.boxColliderData;
+        public DamageData DAMAGE_DATA => subComponentProcessor.damageData;
 
-        public Dictionary<BoolData,GetBool> BoolDic=new Dictionary<BoolData,GetBool>();
-        public delegate bool GetBool();
+        public Dataset AIR_CONTROL => dataProcessor.GetDataset(typeof(AirControl));
+        
+
+        // public Dictionary<BoolData,GetBool> BoolDic=new Dictionary<BoolData,GetBool>();
+        // public delegate bool GetBool();
 
         // public Dictionary<ListData,GetList> ListDic =new Dictionary<ListData, GetList>();
         // public delegate List<GameObject> GetList();
 
-        public Dictionary<CharacterProc,CharacterProcDel> ProcDic=new Dictionary<CharacterProc,CharacterProcDel>();
-
-        public delegate void CharacterProcDel();
+        //public Dictionary<CharacterProc,CharacterProcDel> ProcDic=new Dictionary<CharacterProc,CharacterProcDel>();
+        //public delegate void CharacterProcDel();
 
         [Header("Gravity")]
         // public float GravityMultipilier; //坠落时获得动量
@@ -75,7 +81,7 @@ namespace Games_tutorial {
         public PlayableCharacterType playableCharacterType;
         public Animator SkinnedMeshAnimator;
         public Material material;
-        public List<Collider> BodyParts = new List<Collider>();
+        
         public GameObject LeftHand_Attack;
         public GameObject RightHand_Attack;
         public GameObject LeftFoot_Attack;
@@ -172,77 +178,26 @@ namespace Games_tutorial {
         }*/
 
 
-        public void SetupBodyParts() {
-            BodyParts.Clear();
-
-            Collider[] colliders = this.gameObject.GetComponentsInChildren<Collider>();
-
-            foreach(Collider c in colliders) {
-                if(c.gameObject.GetComponent<LedgeChecker>() == null && c.gameObject.GetComponent<LedgeCollider>()==null) {
-                    if(c.gameObject != this.gameObject) { //我们不想将外面的盒子collider作为trigger，我们希望其能与物理环境进行交互
-                        c.isTrigger = true; //此时collider会穿过其他物理对象，除非我们能够准确知道其他对象何时解除collider
-                        BodyParts.Add(c);
-                        c.attachedRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
-                        c.attachedRigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-
-                        CharacterJoint joint = c.GetComponent<CharacterJoint>();
-                        if(joint != null) {
-                            joint.enableProjection = true;
-                        }
-
-                        if(c.GetComponent<TriggerDetector>() == null) {
-                            c.gameObject.AddComponent<TriggerDetector>(); //我们不太想从层次结构的最顶层检测触发器，因为这也会检测到顶层的盒子碰撞器，我们只想检测身体部位的碰撞器
-                        }
-
-                    }
-                }
-            }
-        }
+        
 
         
 
         public void AddForceToDamagePart(bool zeroVelocity) {
             //add force
-            if(damageDetector.DamagedTrigger != null) {
+            if(DAMAGE_DATA.DamagedTrigger != null) {
                 if(zeroVelocity) {
-                    foreach(Collider c in BodyParts) {
+                    foreach(Collider c in RAGDOLL_DATA.BodyParts) {
                         c.attachedRigidbody.velocity = Vector3.zero;
                     }
                 }
 
-                damageDetector.DamagedTrigger.GetComponent<Rigidbody>()
-                    .AddForce(damageDetector.Attacker.transform.forward * damageDetector.Attack.ForwardForce
-                             + damageDetector.Attacker.transform.right * damageDetector.Attack.RightForce
-                             + damageDetector.Attacker.transform.up * damageDetector.Attack.UpForce);
+                DAMAGE_DATA.DamagedTrigger.GetComponent<Rigidbody>()
+                    .AddForce(DAMAGE_DATA.Attacker.transform.forward * DAMAGE_DATA.Attack.ForwardForce
+                             + DAMAGE_DATA.Attacker.transform.right * DAMAGE_DATA.Attack.RightForce
+                             + DAMAGE_DATA.Attacker.transform.up * DAMAGE_DATA.Attack.UpForce);
             }
         }
 
-        public void UpdateBoxCollider_Size() {
-            // if(!animationProgress.UpdatingBoxCollider){
-            //     return;
-            // }
-            if(!animationProgress.IsRunning(typeof(UpdateBoxCollider))) {
-                return;
-            }
-            if(Vector3.SqrMagnitude(boxCollider.size - animationProgress.TargetSize) > 0.00001f) {
-                boxCollider.size = Vector3.Lerp(boxCollider.size, animationProgress.TargetSize, Time.deltaTime * animationProgress.Size_Speed);
-                animationProgress.UpdatingSpheres = true;
-            }
-        }
-
-        public void UpdateBoxCollider_Center() {
-            // if(!animationProgress.UpdatingBoxCollider){
-            //     return;
-            // }
-            if(!animationProgress.IsRunning(typeof(UpdateBoxCollider))) {
-                return;
-            }
-            if(Vector3.SqrMagnitude(boxCollider.center - animationProgress.TargetCenter) > 0.0001f) {
-                boxCollider.center = Vector3.Lerp(boxCollider.center, animationProgress.TargetCenter, Time.deltaTime * animationProgress.Center_Speed);
-            }
-        }
-
-        
 
         private void Update() {
             subComponentProcessor.UpdateSubComponents();
@@ -251,44 +206,7 @@ namespace Games_tutorial {
         private void FixedUpdate() {
             subComponentProcessor.FixedUpdateSubComponents();
             
-
-            bool cancelPull=AIR_CONTROL.GetBool((int)AirControlBool.CANCEL_PULL);
-            if(!cancelPull) {
-                // if(RIGID_BODY.velocity.y<0f){ //向下
-                //     RIGID_BODY.velocity+=-Vector3.up*GravityMultipilier;
-                // }
-                if(RIGID_BODY.velocity.y > 0f && !Jump) {
-                    // RIGID_BODY.velocity+=-Vector3.up*PullMultipilier;
-                    RIGID_BODY.velocity -= Vector3.up * RIGID_BODY.velocity.y * 0.1f; //可以通过跳跃键摁下时间控制跳跃高度
-                }
-            }
-            animationProgress.UpdatingSpheres = false;
-            UpdateBoxCollider_Size();
-            UpdateBoxCollider_Center();
-            if(animationProgress.UpdatingSpheres) {
-                collisionSpheres.Reposition_FrontSpheres();
-                collisionSpheres.Reposition_BackSpheres();
-                collisionSpheres.Reposition_BottomSpheres();
-                collisionSpheres.Reposition_UpSpheres();
-                if(animationProgress.IsLanding) {
-                    RIGID_BODY.MovePosition(new Vector3(0f, animationProgress.LandingPosition.y, this.transform.position.z));
-                    
-                }
-            }
-
-            // if(animationProgress.RagdollTriggered) {
-            //     TurnOnRagdoll();
-            //     animationProgress.RagdollTriggered = false;
-            // }
-
-            Vector3 maxFallVelocity = AIR_CONTROL.GetVector3((int)AirControlVector3.MAX_FALL_VELOCITY);
-
-            //slow down wallslide
-            if(maxFallVelocity.y != 0f) {
-                if(RIGID_BODY.velocity.y <= maxFallVelocity.y) {
-                    RIGID_BODY.velocity = maxFallVelocity;
-                }
-            }
+            
         }
 
         // public void CreateMiddleSpheres(GameObject start,Vector3 dir,float sec, int interations, List<GameObject> spheresList){
@@ -329,15 +247,6 @@ namespace Games_tutorial {
 
         public bool IsFacingForward() {
             return transform.forward.z > 0f;
-        }
-
-        public Collider GetBodyPart(string name) {
-            foreach(Collider c in BodyParts) {
-                if(c.name.Contains(name)) {
-                    return c;
-                }
-            }
-            return null;
         }
 
         public GameObject GetChildObj(string name) {

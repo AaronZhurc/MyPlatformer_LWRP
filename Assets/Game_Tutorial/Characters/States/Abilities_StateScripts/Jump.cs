@@ -30,7 +30,7 @@ namespace Games_tutorial
                 //isJumped=true;
             }
             //animator.SetBool(TransitionParameter.Grounded.ToString(),false);
-            control.AIR_CONTROL.SetBool((int)AirControlBool.CANCEL_PULL,CancelPull);
+            characterState.VERTICAL_VELOCITY_DATA.NoJumpCancel=CancelPull;
         }
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {

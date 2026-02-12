@@ -62,7 +62,7 @@ namespace Games_tutorial
         private void Update(){
             if(ListCharacters.Count!=0){
                 foreach(CharacterControl control in ListCharacters){
-                    if(!control.damageDetector.IsDead()){
+                    if(!control.DAMAGE_DATA.IsDead()){
                         if(SpikeTriggerRoutine==null&&SpikesReloaded){
                             if(!ListSpikeVictims.Contains(control)){
                                 ListSpikeVictims.Add(control);
@@ -103,7 +103,8 @@ namespace Games_tutorial
                 s.Retract();
             }
             foreach(CharacterControl control in ListSpikeVictims){
-                control.ProcDic[CharacterProc.RAGDOLL_ON]();
+                //control.ProcDic[CharacterProc.RAGDOLL_ON]();
+                control.RAGDOLL_DATA.RagdollTriggered=true;
             }
             
             yield return new WaitForSeconds(1f);

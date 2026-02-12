@@ -12,7 +12,7 @@ namespace Games_tutorial
         }
 
         private void FixedUpdate() {
-            if(control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
+            if(control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponentType.MANUAL_INPUT)) {
                 return;
             }
             if(!control.SkinnedMeshAnimator.GetBool(HashManager.Instance.DicMainParams[TransitionParameter.Grounded])) {
@@ -27,7 +27,7 @@ namespace Games_tutorial
                         continue;
                     }
 
-                    if(!control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponents.MANUALINPUT)) {
+                    if(!control.subComponentProcessor.ComponentsDic.ContainsKey(SubComponentType.MANUAL_INPUT)) {
                         continue;
                     }
 
@@ -47,11 +47,11 @@ namespace Games_tutorial
                         continue;
                     }
 
-                    if(c.damageDetector.IsDead()) {
+                    if(c.DAMAGE_DATA.IsDead()) {
                         continue;
                     }
 
-                    if(control.damageDetector.IsDead()) {
+                    if(control.DAMAGE_DATA.IsDead()) {
                         continue;
                     }
 

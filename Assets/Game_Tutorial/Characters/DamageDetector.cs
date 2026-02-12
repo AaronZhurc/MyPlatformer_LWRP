@@ -6,9 +6,11 @@ using UnityEngine.Rendering;
 
 namespace Games_tutorial
 {
-    public class DamageDetector : MonoBehaviour //比较碰撞信息与正在注册的攻击，改脚本会放在角色控制层次结构最顶层的路径中
+    public class DamageDetector : SubComponent //比较碰撞信息与正在注册的攻击，改脚本会放在角色控制层次结构最顶层的路径中
     {
-        CharacterControl control;
+
+        public DamageData damageData;
+
         // GeneralBodyPart DamegedPart;
         //public int DamegeTaken;
         [SerializeField]
@@ -17,12 +19,6 @@ namespace Games_tutorial
         [SerializeField]
         List<RuntimeAnimatorController> HitReactionList=new List<RuntimeAnimatorController>();
         
-        [Header("Damage Info")]
-        public Attack Attack;
-        public CharacterControl Attacker;
-        public TriggerDetector DamagedTrigger;
-        public GameObject AttackingPart;
-        public AttackInfo BlockedAttack;
 
         [Header("Insta Kill")]
         public RuntimeAnimatorController Assassination_A;
@@ -31,16 +27,17 @@ namespace Games_tutorial
         [Header("Attack")]
         public Attack MarioStampAttack;
         public Attack CrowbarThrow;
-
-        
-        private void Awake(){
-            //DamegeTaken=0;
-            control=GetComponent<CharacterControl>();
-        }
-        private void Update(){
-            if(AttackManager.Instance.CurrentAttacks.Count>0){
-                CheckAttack();
-            }
+        void Start() {
+            damageData=new DamageData {
+                Attacker=null,
+                DamagedTrigger=null,
+                AttackingPart=null,
+                Attack=null,
+                BlockedAttack=null,
+                IsDead=IsDead,
+            };
+            subComponentProcessor.damageData=damageData;
+            subComponentProcessor.ComponentsDic.Add(SubComponentType.DAMAGE_DETECTOR,this);
         }
 
         private bool AttackIsValid(AttackInfo info){
@@ -96,10 +93,11 @@ namespace Games_tutorial
                     foreach(AttackPartType part in info.AttackParts){
 
                         if(info.Attacker.GetAttackingPart(part)==collider.gameObject){
-                            control.damageDetector.Attack=info.AttackAbility;
-                            control.damageDetector.Attacker=info.Attacker;
-                            control.damageDetector.DamagedTrigger=data.Key;
-                            control.damageDetector.AttackingPart=info.Attacker.GetAttackingPart(part);
+                            damageData.SetData(info.Attacker,info.AttackAbility,data.Key,info.Attacker.GetAttackingPart(part));
+                            // damageData.Attack=info.AttackAbility;
+                            // damageData.Attacker=info.Attacker;
+                            // damageData.DamagedTrigger=data.Key;
+                            // damageData.AttackingPart=info.Attacker.GetAttackingPart(part);
                             return true;
                         }
                         
@@ -125,30 +123,33 @@ namespace Games_tutorial
         }
 
         private bool IsInLethalRange(AttackInfo info){
-            foreach(Collider c in control.BodyParts){
+            foreach(Collider c in control.RAGDOLL_DATA.BodyParts){
                 float dist=Vector3.SqrMagnitude(c.transform.position-info.Attacker.transform.position);
                 //Debug.Log(this.gameObject.name+" dist: "+dist.ToString());
                 if(dist<=info.LethalRange){
-                    control.damageDetector.Attack=info.AttackAbility;
-                    control.damageDetector.Attacker=info.Attacker;
+                    // damageData.Attack=info.AttackAbility;
+                    // damageData.Attacker=info.Attacker;
 
-                    int index=UnityEngine.Random.Range(0, control.BodyParts.Count);
-                    control.damageDetector.DamagedTrigger=control.BodyParts[index].GetComponent<TriggerDetector>();
+                    int index=UnityEngine.Random.Range(0, control.RAGDOLL_DATA.BodyParts.Count);
+                    TriggerDetector triggerDetector=control.RAGDOLL_DATA.BodyParts[index].GetComponent<TriggerDetector>();
+                    // damageData.DamagedTrigger=control.RAGDOLL_DATA.BodyParts[index].GetComponent<TriggerDetector>();
+                    damageData.SetData(info.Attacker,info.AttackAbility,triggerDetector,null);
                     return true;
                 }
             }
             return false;
         }
 
-        public bool IsDead(){
+        bool IsDead(){
             if(hp<=0f){
                 return true;
             }else{
                 return false;
             }
         }
+
         bool IsBlocked(AttackInfo info) {
-            if(info == BlockedAttack && BlockedAttack != null) {
+            if(info == damageData.BlockedAttack && damageData.BlockedAttack != null) {
                 return true;
             }
             if(control.animationProgress.IsRunning(typeof(Block))) {
@@ -175,7 +176,7 @@ namespace Games_tutorial
                 return;
             }
             if(IsBlocked(info)) {
-                BlockedAttack = info;
+                damageData.BlockedAttack = info;
                 return;
             }
             if(info.MustCollide) {
@@ -185,7 +186,7 @@ namespace Games_tutorial
                         if(info.AttackAbility.ParticleType.ToString().Contains("VFX")) {
                             GameObject vfx = PoolManager.Instance.GetObject(info.AttackAbility.ParticleType);
 
-                            vfx.transform.position = control.damageDetector.AttackingPart.transform.position;
+                            vfx.transform.position = damageData.AttackingPart.transform.position;
                             vfx.SetActive(true);
                             if(info.Attacker.IsFacingForward()) {
                                 vfx.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
@@ -216,7 +217,7 @@ namespace Games_tutorial
             control.animationProgress.CurrentRunningAbilities.Clear();
 
             if(IsDead()){
-                control.ProcDic[CharacterProc.RAGDOLL_ON]();
+                control.RAGDOLL_DATA.RagdollTriggered=true;
 
                 //control.animationProgress.RagdollTriggered=true;
                 //control.TurnOnRagdoll();
@@ -247,7 +248,7 @@ namespace Games_tutorial
         }
 
         public void DeathBySpikes(){
-            control.damageDetector.DamagedTrigger = null; //不对身体部位添加任何力
+            damageData.DamagedTrigger = null; //不对身体部位添加任何力
             hp =0f;
         }
 
@@ -275,6 +276,15 @@ namespace Games_tutorial
             control.transform.position=attacker.transform.position+attacker.transform.forward*0.45f;
             
             hp =0f;
+        }
+
+        public override void OnUpdate() {
+            if(AttackManager.Instance.CurrentAttacks.Count>0){
+                CheckAttack();
+            }
+        }
+
+        public override void OnFixedUpdate() {
         }
     }
 }

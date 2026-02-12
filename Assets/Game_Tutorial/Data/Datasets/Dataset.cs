@@ -11,21 +11,30 @@ namespace Games_tutorial.Datasets{
 
 
         public bool GetBool(int index) {
-            return BoolDictionary[index];
+            if(BoolDictionary.ContainsKey(index)){
+                return BoolDictionary[index];
+            }
+            return false;
         }
         public void SetBool(int index, bool b) {
             BoolDictionary[index] = b;
         }
 
         public float GetFloat(int index) {
-            return FloatDictionary[index];
+            if(BoolDictionary.ContainsKey(index)){
+                return FloatDictionary[index];
+            }
+            return 0f;
         }
         public void SetFloat(int index, float f) {
             FloatDictionary[index] = f;
         }
 
         public Vector3 GetVector3(int index) {
-            return Vector3Dictionary[index];
+            if(BoolDictionary.ContainsKey(index)){
+                return Vector3Dictionary[index];
+            }
+            return Vector3.zero;
         }
         public void SetVector3(int index, Vector3 v) {
             Vector3Dictionary[index] = v;

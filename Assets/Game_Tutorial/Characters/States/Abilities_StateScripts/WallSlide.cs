@@ -16,15 +16,14 @@ namespace Games_tutorial
             control.MoveRight=false;
 
             control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,0f);
+            control.AIR_CONTROL.SetBool((int)AirControlBool.CAN_WALL_JUMP,false);
 
-            control.AIR_CONTROL.SetVector3((int)AirControlVector3.MAX_FALL_VELOCITY,MaxFallVelocity);
-
-            control.AIR_CONTROL.SetBool((int)AirControlBool.CAN_WALL_JUMP,false);;
+            characterState.VERTICAL_VELOCITY_DATA.MaxWallSideVelocity=MaxFallVelocity;
         }
 
         public override void OnExit(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
-            characterState.characterControl.AIR_CONTROL.SetVector3((int)AirControlVector3.MAX_FALL_VELOCITY,Vector3.zero);
+            characterState.VERTICAL_VELOCITY_DATA.MaxWallSideVelocity=Vector3.zero;
         }
 
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)

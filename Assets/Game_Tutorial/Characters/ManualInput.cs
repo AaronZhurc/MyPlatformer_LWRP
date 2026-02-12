@@ -6,16 +6,22 @@ namespace Games_tutorial
 {
     public class ManualInput : SubComponent
     {
+        public ManualInputData manualInputData;
 
-        public List<InputKeyType> DoubleTaps=new List<InputKeyType>();
-        private List<InputKeyType> UpKeys=new List<InputKeyType>();
-        private Dictionary<InputKeyType, float> DicDoubleTapTimings=new Dictionary<InputKeyType, float>();
+        List<InputKeyType> DoubleTaps=new List<InputKeyType>();
+        List<InputKeyType> UpKeys=new List<InputKeyType>();
+        Dictionary<InputKeyType, float> DicDoubleTapTimings=new Dictionary<InputKeyType, float>();
 
         void Start() {
-            subComponentProcessor.ComponentsDic.Add(SubComponents.MANUALINPUT,this);
+            manualInputData=new ManualInputData {
+                DoubleTapDown=IsDoubleTap_Down,
+                DoubleTapUp=IsDoubleTap_Up,
+            };
+            subComponentProcessor.manualInputData=manualInputData;
+            subComponentProcessor.ComponentsDic.Add(SubComponentType.MANUAL_INPUT,this);
 
-            control.BoolDic.Add(BoolData.DOUBLETAP_UP, IsDoubleTap_Up);
-            control.BoolDic.Add(BoolData.DOUBLETAP_DOWN, IsDoubleTap_Down);
+            // control.BoolDic.Add(BoolData.DOUBLETAP_UP, IsDoubleTap_Up);
+            // control.BoolDic.Add(BoolData.DOUBLETAP_DOWN, IsDoubleTap_Down);
         }
 
         public override void OnFixedUpdate() {
@@ -117,7 +123,7 @@ namespace Games_tutorial
             }
         }
 
-        public bool IsDoubleTap_Up() {
+        bool IsDoubleTap_Up() {
             if(DoubleTaps.Contains(InputKeyType.KEY_MOVE_UP)) {
                 return true;
             }
@@ -126,7 +132,7 @@ namespace Games_tutorial
             }
         }
 
-        public bool IsDoubleTap_Down() {
+        bool IsDoubleTap_Down() {
             if(DoubleTaps.Contains(InputKeyType.KEY_MOVE_DOWN)) {
                 return true;
             }

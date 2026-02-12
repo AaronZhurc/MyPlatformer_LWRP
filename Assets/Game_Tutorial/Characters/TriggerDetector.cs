@@ -29,7 +29,7 @@ namespace Games_tutorial
             if(control == null) {
                 return;
             }
-            if(control.BodyParts.Contains(col)){ //不希望是自己的部分触碰
+            if(control.RAGDOLL_DATA.BodyParts.Contains(col)){ //不希望是自己的部分触碰
                 return;
             }
             CharacterControl attacker=col.transform.root.GetComponent<CharacterControl>();
@@ -60,10 +60,12 @@ namespace Games_tutorial
                     AttackInfo info=new AttackInfo();
                     info.CopyInfo(control.damageDetector.CrowbarThrow, control);
 
-                    control.damageDetector.DamagedTrigger=this;
-                    control.damageDetector.Attack=control.damageDetector.CrowbarThrow;
-                    control.damageDetector.Attacker=w.Thrower;
-                    control.damageDetector.AttackingPart=w.Thrower.RightHand_Attack;
+                    // control.DAMAGE_DATA.DamagedTrigger=this;
+                    // control.DAMAGE_DATA.Attack=control.damageDetector.CrowbarThrow;
+                    // control.DAMAGE_DATA.Attacker=w.Thrower;
+                    // control.DAMAGE_DATA.AttackingPart=w.Thrower.RightHand_Attack;
+
+                    control.DAMAGE_DATA.SetData(w.Thrower,control.damageDetector.CrowbarThrow,this,null);
 
                     control.damageDetector.TakeDamage(info);
 

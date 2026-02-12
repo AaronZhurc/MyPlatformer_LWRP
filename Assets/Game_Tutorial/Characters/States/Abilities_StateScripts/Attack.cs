@@ -104,8 +104,8 @@ namespace Games_tutorial
                         info.GetComponent<PoolObject>().TurnOff();
 
                         foreach(CharacterControl c in CharacterManager.Instance.Characters) {
-                            if(c.damageDetector.BlockedAttack == info) {
-                                c.damageDetector.BlockedAttack = null;
+                            if(c.DAMAGE_DATA.BlockedAttack == info) {
+                                c.DAMAGE_DATA.BlockedAttack = null;
                             }
                         }
 

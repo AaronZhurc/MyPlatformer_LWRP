@@ -6,14 +6,21 @@ namespace Games_tutorial
 {
     public class Ragdoll : SubComponent
     {
-        public bool RagdollTriggered=false;
+        public RagdollData ragdollData;
 
         void Start() {
-            subComponentProcessor.ComponentsDic.Add(SubComponents.RAGDOLL,this);
-            control.ProcDic.Add(CharacterProc.RAGDOLL_ON, TurnOnRagdoll);
+            ragdollData=new RagdollData {
+                RagdollTriggered=false,
+                BodyParts=new List<Collider>(),
+                GetBody=GetBodyPart,
+            };
+            SetupBodyParts();
+            subComponentProcessor.ragdollData=ragdollData;
+            subComponentProcessor.ComponentsDic.Add(SubComponentType.RAGDOLL,this);
+            //control.ProcDic.Add(CharacterProc.RAGDOLL_ON, TurnOnRagdoll);
         }
         public override void OnFixedUpdate() {
-            if(RagdollTriggered) {
+            if(ragdollData.RagdollTriggered) {
                 ProcRagdoll();
             }
         }
@@ -22,12 +29,39 @@ namespace Games_tutorial
             throw new System.NotImplementedException();
         }
 
-        public void TurnOnRagdoll() {
-            RagdollTriggered = true;
+        // public void TurnOnRagdoll() {
+        //     ragdollData.RagdollTriggered = true;
+        // }
+
+        public void SetupBodyParts() {
+            ragdollData.BodyParts.Clear();
+
+            Collider[] colliders = control.gameObject.GetComponentsInChildren<Collider>();
+
+            foreach(Collider c in colliders) {
+                if(c.gameObject.GetComponent<LedgeChecker>() == null && c.gameObject.GetComponent<LedgeCollider>()==null && c.gameObject.GetComponent<OverlapChecker>()==null) {
+                    if(c.gameObject != control.gameObject) { //我们不想将外面的盒子collider作为trigger，我们希望其能与物理环境进行交互
+                        c.isTrigger = true; //此时collider会穿过其他物理对象，除非我们能够准确知道其他对象何时解除collider
+                        ragdollData.BodyParts.Add(c);
+                        c.attachedRigidbody.interpolation = RigidbodyInterpolation.Interpolate;
+                        c.attachedRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+                        CharacterJoint joint = c.GetComponent<CharacterJoint>();
+                        if(joint != null) {
+                            joint.enableProjection = true;
+                        }
+
+                        if(c.GetComponent<TriggerDetector>() == null) {
+                            c.gameObject.AddComponent<TriggerDetector>(); //我们不太想从层次结构的最顶层检测触发器，因为这也会检测到顶层的盒子碰撞器，我们只想检测身体部位的碰撞器
+                        }
+
+                    }
+                }
+            }
         }
 
         void ProcRagdoll() {
-            RagdollTriggered = false;
+            ragdollData.RagdollTriggered = false;
 
             if(control.SkinnedMeshAnimator.avatar == null) {
                 return;
@@ -39,7 +73,7 @@ namespace Games_tutorial
             }
 
             //设置身体部件位置
-            foreach(Collider c in control.BodyParts) {
+            foreach(Collider c in ragdollData.BodyParts) {
                 TriggerDetector det = c.GetComponent<TriggerDetector>();
                 det.LastPosition = c.gameObject.transform.position;
                 det.LastRotation = c.gameObject.transform.rotation;
@@ -54,7 +88,7 @@ namespace Games_tutorial
 
 
             //关闭legde colloders
-            control.ProcDic[CharacterProc.LEDGE_COLLIDERS_OFF]();
+            control.LEDGE_GRAB_DATA.LedgeCollidersOff();
 
             //关闭ai
             if(control.aiController!=null){
@@ -63,7 +97,7 @@ namespace Games_tutorial
             }
 
             //打开ragdoll
-            foreach(Collider c in control.BodyParts) {
+            foreach(Collider c in ragdollData.BodyParts) {
                 c.isTrigger = false; //转换为物理对象
 
 
@@ -78,6 +112,15 @@ namespace Games_tutorial
             }
 
             control.AddForceToDamagePart(false);
+        }
+
+        Collider GetBodyPart(string name) {
+            foreach(Collider c in ragdollData.BodyParts) {
+                if(c.name.Contains(name)) {
+                    return c;
+                }
+            }
+            return null;
         }
     }
 }

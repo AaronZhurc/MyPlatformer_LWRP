@@ -36,7 +36,7 @@ namespace Games_tutorial
 
             subComponentProcessor.blockingData=blockingData;
 
-            subComponentProcessor.ComponentsDic.Add(SubComponents.BLOCKINGOBJECTS,this);
+            subComponentProcessor.ComponentsDic.Add(SubComponentType.BLOCKING_OBJECTS,this);
 
             // control.ProcDic.Add(CharacterProc.CLEAR_FRONTBLOCKINGOBJDIC,ClearFrontBlockingObjsDic);
 
@@ -113,11 +113,13 @@ namespace Games_tutorial
                     AttackInfo info=new AttackInfo();
                     info.CopyInfo(control.damageDetector.MarioStampAttack, control);
 
-                    int index=Random.Range(0,c.BodyParts.Count);
-                    c.damageDetector.DamagedTrigger=c.BodyParts[index].GetComponent<TriggerDetector>();
-                    c.damageDetector.Attack=control.damageDetector.MarioStampAttack;
-                    c.damageDetector.Attacker=control;
-                    c.damageDetector.AttackingPart=control.RightFoot_Attack;
+                    int index=Random.Range(0,c.RAGDOLL_DATA.BodyParts.Count);
+                    TriggerDetector randomPart=c.RAGDOLL_DATA.BodyParts[index].GetComponent<TriggerDetector>();
+                    // c.DAMAGE_DATA.Attack=control.damageDetector.MarioStampAttack;
+                    // c.DAMAGE_DATA.Attacker=control;
+                    // c.DAMAGE_DATA.AttackingPart=control.RightFoot_Attack;
+
+                    c.DAMAGE_DATA.SetData(control,control.damageDetector.MarioStampAttack,randomPart,control.RightFoot_Attack);
 
                     c.damageDetector.TakeDamage(info);
                 }
