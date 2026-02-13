@@ -15,8 +15,9 @@ namespace Games_tutorial
             animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Move],false);
 
             //  CharacterControl control=characterState.GetCharacterControl(animator);
-            CharacterControl control=characterState.characterControl;
-            control.animationProgress.disallowEarlyTurn=false;
+            // CharacterControl control=characterState.characterControl;
+            characterState.ROTATION_DATA.LockEarlyTurn=false;
+            characterState.ROTATION_DATA.LockDirectionNextState=false;
 
             // control.animationProgress.FrontBlockingObjs.Clear();
             // characterState.characterControl.ProcDic[CharacterProc.CLEAR_FRONTBLOCKINGOBJDIC]();
@@ -26,7 +27,8 @@ namespace Games_tutorial
         {
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
-            control.animationProgress.LockDirectionNextState=false;
+            characterState.ROTATION_DATA.LockEarlyTurn=false;
+            characterState.ROTATION_DATA.LockDirectionNextState=false;
 
             // if(control.animationProgress.AttackTriggered/*control.Attack*/){
             //     animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Attack],true);
@@ -34,15 +36,15 @@ namespace Games_tutorial
             // }
 
             if(control.Jump){
-                bool jumped=control.AIR_CONTROL.GetBool((int)AirControlBool.JUMPED);
-                if(!jumped){
+                // bool jumped=control.AIR_CONTROL.GetBool((int)AirControlBool.JUMPED);
+                if(!characterState.JUMP_DATA.Jumped){
                     if(control.animationProgress.Ground!=null){
                         animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Jump],true);
                     }
                 }
             }else{
                 if(!control.animationProgress.IsRunning(typeof(Jump))){
-                    control.AIR_CONTROL.SetBool((int)AirControlBool.JUMPED,false);
+                    characterState.JUMP_DATA.Jumped=false;
                 }
             }
             if(control.MoveLeft&&control.MoveRight){

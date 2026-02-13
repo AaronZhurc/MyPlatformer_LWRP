@@ -16,6 +16,9 @@ namespace Games_tutorial
         public BoxColliderData boxColliderData;
         public VerticalVelocityData verticalVelocityData;
         public DamageData damageData;
+        public MomentumData momentumData;
+        public RotationData rotationData;
+        public JumpData jumpData;
 
         void Awake() {
             control=GetComponentInParent<CharacterControl>();

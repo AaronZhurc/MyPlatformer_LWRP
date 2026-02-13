@@ -17,7 +17,7 @@ namespace Games_tutorial
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
 
-            if(control.IsFacingForward()){
+            if(control.ROTATION_DATA.IsFacingForward()){
                 if(control.MoveLeft){
                     animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Turn],true);
                 }

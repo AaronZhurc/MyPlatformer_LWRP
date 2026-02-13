@@ -15,11 +15,11 @@ namespace Games_tutorial
             Vector3 dir=control.aiProgress.pathfindingAgent.StartSphere.transform.position-control.transform.position;
 
             if(dir.z>0f){
-                control.FaceForward(true);
+                control.ROTATION_DATA.FaceForward(true);
                 control.MoveRight=true;
                 control.MoveLeft=false;
             }else{
-                control.FaceForward(false);
+                control.ROTATION_DATA.FaceForward(false);
                 control.MoveRight=false;
                 control.MoveLeft=true;
             }

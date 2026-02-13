@@ -59,6 +59,9 @@ namespace Games_tutorial {
         public ManualInputData MANUAL_INPUT_DATA => subComponentProcessor.manualInputData;
         public BoxColliderData BOX_COLLIDER_DATA => subComponentProcessor.boxColliderData;
         public DamageData DAMAGE_DATA => subComponentProcessor.damageData;
+        public MomentumData MOMENTUM_DATA => subComponentProcessor.momentumData;
+        public RotationData ROTATION_DATA => subComponentProcessor.rotationData;
+        public JumpData JUMP_DATA => subComponentProcessor.jumpData;
 
         public Dataset AIR_CONTROL => dataProcessor.GetDataset(typeof(AirControl));
         
@@ -126,7 +129,7 @@ namespace Games_tutorial {
 
             dataProcessor=this.gameObject.GetComponentInChildren<DataProcessor>();
             System.Type[] arr={typeof(AirControl),typeof(SomeDataset)};
-            dataProcessor.InitializeSets(arr);
+            // dataProcessor.InitializeSets(arr);
 
             // if(SwitchBack){
             //     FaceForward(false);
@@ -226,27 +229,6 @@ namespace Games_tutorial {
 
         public void MoveForward(float Speed, float SpeedGraph) {
             transform.Translate(Vector3.forward * Speed * SpeedGraph * Time.deltaTime);
-        }
-
-        public void FaceForward(bool forward) {
-            if(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name.Equals(RBScenes.TutorialScene_CharacterSelect.ToString())) {
-                return;
-            }
-
-            if(!SkinnedMeshAnimator.enabled) {
-                return;
-            }
-
-            if(forward) {
-                transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            }
-            else {
-                transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-            }
-        }
-
-        public bool IsFacingForward() {
-            return transform.forward.z > 0f;
         }
 
         public GameObject GetChildObj(string name) {

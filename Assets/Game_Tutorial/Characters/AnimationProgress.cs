@@ -22,8 +22,6 @@ namespace Games_tutorial
         public bool AttackButtonIsReset;
 
         [Header("GroundMovement")]
-        public bool disallowEarlyTurn;
-        public bool LockDirectionNextState;
         // public bool IsLanding;
         public bool IsIgnoreCharacterTime;
         
@@ -104,13 +102,13 @@ namespace Games_tutorial
         public bool IsFacingAttacker() {
             Vector3 vec=control.DAMAGE_DATA.Attacker.transform.position-control.transform.position;
             if(vec.z < 0f) {
-                if(control.IsFacingForward()){
+                if(control.ROTATION_DATA.IsFacingForward()){
                     return false;
                 } else {
                     return true;
                 }
             }else if(vec.z > 0f) {
-                if(control.IsFacingForward()){
+                if(control.ROTATION_DATA.IsFacingForward()){
                     return true;
                 } else {
                     return false;

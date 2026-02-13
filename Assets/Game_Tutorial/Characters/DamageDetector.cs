@@ -155,11 +155,11 @@ namespace Games_tutorial
             if(control.animationProgress.IsRunning(typeof(Block))) {
                 Vector3 dir = info.Attacker.transform.position - control.transform.position;
                 if(dir.z > 0f) {
-                    if(control.IsFacingForward()) {
+                    if(control.ROTATION_DATA.IsFacingForward()) {
                         return true;
                     }
                 } else if(dir.z < 0f) {
-                    if(!control.IsFacingForward()) {
+                    if(!control.ROTATION_DATA.IsFacingForward()) {
                         return true;
                     }
                 }
@@ -188,7 +188,7 @@ namespace Games_tutorial
 
                             vfx.transform.position = damageData.AttackingPart.transform.position;
                             vfx.SetActive(true);
-                            if(info.Attacker.IsFacingForward()) {
+                            if(info.Attacker.ROTATION_DATA.IsFacingForward()) {
                                 vfx.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
                             }
                             else {
@@ -267,9 +267,9 @@ namespace Games_tutorial
             Vector3 dir=control.transform.position-attacker.transform.position;
 
             if(dir.z < 0f) {
-                attacker.FaceForward(false);
+                attacker.ROTATION_DATA.FaceForward(false);
             }else if(dir.z>0f){
-                attacker.FaceForward(true);
+                attacker.ROTATION_DATA.FaceForward(true);
             }
             
             control.transform.LookAt(control.transform.position+(attacker.transform.forward*5f),Vector3.up);

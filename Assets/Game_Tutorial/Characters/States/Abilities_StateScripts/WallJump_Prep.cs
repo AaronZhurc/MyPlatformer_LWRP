@@ -15,14 +15,15 @@ namespace Games_tutorial
             
             control.MoveLeft=false;
             control.MoveRight=false;
-            control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,0f);
+            // control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,0f);
+            characterState.MOMENTUM_DATA.Momentum=0f;
 
             control.RIGID_BODY.velocity=Vector3.zero;
             
-            if(control.IsFacingForward()){
-                control.FaceForward(false);
+            if(control.ROTATION_DATA.IsFacingForward()){
+                control.ROTATION_DATA.FaceForward(false);
             }else{
-                control.FaceForward(true);
+                control.ROTATION_DATA.FaceForward(true);
             }
 
         }

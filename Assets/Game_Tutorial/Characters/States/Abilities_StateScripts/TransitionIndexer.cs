@@ -55,7 +55,8 @@ namespace Games_tutorial
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
             
-            control.AIR_CONTROL.SetBool((int)AirControlBool.CHECK_WALL_BLOCK,StartCheckingWallBlock());
+            // control.AIR_CONTROL.SetBool((int)AirControlBool.CHECK_WALL_BLOCK,StartCheckingWallBlock());
+            control.JUMP_DATA.CheckWallBlock=StartCheckingWallBlock();
             
             if(animator.GetInteger(HashManager.Instance.DicMainParams[TransitionParameter.TransitionIndex]) == 0){
                 if(MakeTransition(control)){
@@ -142,7 +143,7 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.MOVE_FORWARD: {
-                            if(control.IsFacingForward()) {
+                            if(control.ROTATION_DATA.IsFacingForward()) {
                                 if(!control.MoveRight) {
                                     return false;
                                 }
@@ -188,8 +189,8 @@ namespace Games_tutorial
                             break;
                         }
                     case TransitionConditionType.CAN_WALL_JUMP: {
-                            bool canWallJump=control.AIR_CONTROL.GetBool((int)AirControlBool.CAN_WALL_JUMP);
-                            if(!canWallJump) {
+                            // bool canWallJump=control.AIR_CONTROL.GetBool((int)AirControlBool.CAN_WALL_JUMP);
+                            if(!control.JUMP_DATA.CanWallJump) {
                                 return false;
                             }
                             break;

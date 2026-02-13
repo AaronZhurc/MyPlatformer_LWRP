@@ -15,8 +15,10 @@ namespace Games_tutorial
             control.MoveLeft=false;
             control.MoveRight=false;
 
-            control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,0f);
-            control.AIR_CONTROL.SetBool((int)AirControlBool.CAN_WALL_JUMP,false);
+            // control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,0f);
+            characterState.MOMENTUM_DATA.Momentum=0f;
+            // control.AIR_CONTROL.SetBool((int)AirControlBool.CAN_WALL_JUMP,false);
+            control.JUMP_DATA.CanWallJump=false;
 
             characterState.VERTICAL_VELOCITY_DATA.MaxWallSideVelocity=MaxFallVelocity;
         }
@@ -29,7 +31,8 @@ namespace Games_tutorial
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
             if(!characterState.characterControl.Jump){
-                characterState.characterControl.AIR_CONTROL.SetBool((int)AirControlBool.CAN_WALL_JUMP,true);
+                // characterState.characterControl.AIR_CONTROL.SetBool((int)AirControlBool.CAN_WALL_JUMP,true);
+                characterState.characterControl.JUMP_DATA.CanWallJump=true;
             }
         }
     }

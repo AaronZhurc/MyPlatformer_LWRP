@@ -10,7 +10,7 @@ namespace Games_tutorial
         public override void OnEnter(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
             // CharacterControl control=characterState.GetCharacterControl(animator);
-            characterState.characterControl.animationProgress.disallowEarlyTurn = true;
+            characterState.ROTATION_DATA.LockEarlyTurn = true;
         }
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {

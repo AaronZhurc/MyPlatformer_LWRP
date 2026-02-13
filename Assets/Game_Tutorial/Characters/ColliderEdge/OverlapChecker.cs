@@ -18,7 +18,7 @@ namespace Games_tutorial
         }
         private void FixedUpdate()
         {
-            if(control.AIR_CONTROL.GetBool((int)AirControlBool.CHECK_WALL_BLOCK)){
+            if(control.JUMP_DATA.CheckWallBlock){
                 if(control.collisionSpheres.FrontOverlapCheckers.Contains(this)){
                     ObjIsOverlapping=CheckObj();
                 }

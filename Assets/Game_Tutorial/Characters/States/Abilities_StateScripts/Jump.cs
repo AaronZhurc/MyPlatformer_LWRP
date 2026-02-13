@@ -23,10 +23,12 @@ namespace Games_tutorial
         {
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
-            control.AIR_CONTROL.SetBool((int)AirControlBool.JUMPED,false);
+            // control.AIR_CONTROL.SetBool((int)AirControlBool.JUMPED,false);
+            characterState.JUMP_DATA.Jumped=false;
             if(JumpTiming==0f){
                 control.RIGID_BODY.AddForce(Vector3.up*JumpForce);
-                control.AIR_CONTROL.SetBool((int)AirControlBool.JUMPED,true);
+                // control.AIR_CONTROL.SetBool((int)AirControlBool.JUMPED,true);
+                characterState.JUMP_DATA.Jumped=true;
                 //isJumped=true;
             }
             //animator.SetBool(TransitionParameter.Grounded.ToString(),false);
@@ -37,12 +39,12 @@ namespace Games_tutorial
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
 
-            bool jumped=control.AIR_CONTROL.GetBool((int)AirControlBool.JUMPED);
+            // bool jumped=control.AIR_CONTROL.GetBool((int)AirControlBool.JUMPED);
             //control.GravityMultipilier=Gravity.Evaluate(stateInfo.normalizedTime);
             //control.PullMultipilier=Pull.Evaluate(stateInfo.normalizedTime);
-            if(!jumped&&stateInfo.normalizedTime>=JumpTiming){
+            if(!characterState.JUMP_DATA.Jumped&&stateInfo.normalizedTime>=JumpTiming){
                 control.RIGID_BODY.AddForce(Vector3.up*JumpForce);
-                control.AIR_CONTROL.SetBool((int)AirControlBool.JUMPED,true);
+                characterState.JUMP_DATA.Jumped=true;
             }
         }
         public override void OnExit(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)

@@ -12,10 +12,10 @@ namespace Games_tutorial
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
 
-            if(control.IsFacingForward()){
-                control.FaceForward(false);
+            if(control.ROTATION_DATA.IsFacingForward()){
+                control.ROTATION_DATA.FaceForward(false);
             }else{
-                control.FaceForward(true);
+                control.ROTATION_DATA.FaceForward(true);
             }
         }
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)

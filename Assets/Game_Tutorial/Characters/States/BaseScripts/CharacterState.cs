@@ -14,6 +14,9 @@ namespace Games_tutorial
         public RagdollData RAGDOLL_DATA => characterControl.subComponentProcessor.ragdollData;
         public BoxColliderData BOX_COLLIDER_DATA => characterControl.subComponentProcessor.boxColliderData;
         public VerticalVelocityData VERTICAL_VELOCITY_DATA => characterControl.subComponentProcessor.verticalVelocityData;
+        public MomentumData MOMENTUM_DATA => characterControl.subComponentProcessor.momentumData;
+        public RotationData ROTATION_DATA => characterControl.subComponentProcessor.rotationData;
+        public JumpData JUMP_DATA => characterControl.subComponentProcessor.jumpData;
         
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

@@ -44,29 +44,31 @@ namespace Games_tutorial
             
             characterState.characterControl.animationProgress.LatestMoveForward=this;
             
-            if(AllowEarlyTurn&&!control.animationProgress.LockDirectionNextState){
-                if(AllowEarlyTurn&&!control.animationProgress.disallowEarlyTurn){
+            if(AllowEarlyTurn){
+                if(!characterState.ROTATION_DATA.EarlyTurnIsLocked()){
                     if(control.MoveLeft){
-                        control.FaceForward(false);
+                        control.ROTATION_DATA.FaceForward(false);
                     }else{
-                        control.FaceForward(true);
+                        control.ROTATION_DATA.FaceForward(true);
                     }
                 }
             }else{
-                control.animationProgress.LockDirectionNextState = false;
+                characterState.ROTATION_DATA.LockDirectionNextState = false;
             }
-            control.animationProgress.disallowEarlyTurn=false;
+            characterState.ROTATION_DATA.LockEarlyTurn=false;
             //control.animationProgress.AirMomentum=0f;
             if(StartingMomentum>0.001f){
-                if(control.IsFacingForward()){
-                    control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM, StartingMomentum);
+                if(control.ROTATION_DATA.IsFacingForward()){
+                    // control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM, StartingMomentum);
+                    control.MOMENTUM_DATA.Momentum=StartingMomentum;
                 }else{
-                    control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM, -StartingMomentum);
+                    // control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM, -StartingMomentum);
+                    control.MOMENTUM_DATA.Momentum=-StartingMomentum;
                 }
             }
 
-            control.animationProgress.disallowEarlyTurn=false;
-            control.animationProgress.LockDirectionNextState=false;
+            characterState.ROTATION_DATA.LockEarlyTurn=false;
+            characterState.ROTATION_DATA.LockDirectionNextState=false;
             // control.animationProgress.BlockingObjs.Clear();
 
             //UpdateMoveOnHit(control);
@@ -80,7 +82,7 @@ namespace Games_tutorial
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
 
-            control.animationProgress.LockDirectionNextState=LockDirectionNextState;
+            characterState.ROTATION_DATA.LockDirectionNextState=LockDirectionNextState;
             
             // if(characterState.characterControl.animationProgress.IsRunning(typeof(MoveForward))){
             //     return;
@@ -113,7 +115,7 @@ namespace Games_tutorial
                 animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Turbo],false);
             }
             if(UseMomentum){
-                UpdateMomentum(control,stateInfo);
+                MoveOnMomentum(control,stateInfo);
             }else{
                 if(Constant){
                     ConstantMove(control,animator,stateInfo);
@@ -128,7 +130,8 @@ namespace Games_tutorial
             // CharacterControl control=characterState.GetCharacterControl(animator);
             CharacterControl control=characterState.characterControl;
             if(ClearMomentumOnExit){
-                control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,0f);
+                // control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,0f);
+                control.MOMENTUM_DATA.Momentum=0f;
             }
         }
 
@@ -150,42 +153,17 @@ namespace Games_tutorial
         //     }
         // }
 
-        private void UpdateMomentum(CharacterControl control,AnimatorStateInfo stateInfo){           
-            // current momentum
-            float momentum=control.AIR_CONTROL.GetFloat((int)AirControlFloat.AIR_MOMENTUM);
+        private void MoveOnMomentum(CharacterControl control,AnimatorStateInfo stateInfo){           
             float speed=SpeedGraph.Evaluate(stateInfo.normalizedTime)*Speed*Time.deltaTime;
+            control.MOMENTUM_DATA.CalculateMomentum(speed,MaxMomentum);
 
-            if(!control.BLOCKING_DATA.RightSideBlocked()){
-                if(control.MoveRight){
-                    control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,momentum+speed);
-                }
-            }
-            if(!control.BLOCKING_DATA.LeftSideBlocked()){
-                if(control.MoveLeft){ 
-                   control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,momentum-speed);
-                }
-            }
-
-            if(control.BLOCKING_DATA.RightSideBlocked()||control.BLOCKING_DATA.LeftSideBlocked()){
-                //如果两遍都被阻挡，动量下降到0
-                float lerped=Mathf.Lerp(momentum,0f,Time.deltaTime*1.5f);
-                control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,lerped);
-            }
-
-            if(Mathf.Abs(momentum   )>=MaxMomentum){
-                if(momentum>0f){
-                    control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,MaxMomentum);
-                }else if(momentum<0f){
-                    control.AIR_CONTROL.SetFloat((int)AirControlFloat.AIR_MOMENTUM,-MaxMomentum);
-                }
-            }
-            if(momentum>0f){
-                control.FaceForward(true);
-            }else if(momentum<0f){
-                control.FaceForward(false);
+            if(control.MOMENTUM_DATA.Momentum>0f){
+                control.ROTATION_DATA.FaceForward(true);
+            }else if(control.MOMENTUM_DATA.Momentum<0f){
+                control.ROTATION_DATA.FaceForward(false);
             }
             if(!IsBlocked(control)){
-                control.MoveForward(Speed,Mathf.Abs(momentum));
+                control.MoveForward(Speed,Mathf.Abs(control.MOMENTUM_DATA.Momentum));
             }
         }
         private void ConstantMove(CharacterControl control, Animator animator, AnimatorStateInfo stateInfo){ //自动前进，比如出拳时的自动前进

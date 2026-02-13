@@ -107,7 +107,7 @@ namespace Games_tutorial
             z = platform.transform.position.z - (boxCollider.size.z / 2f);
 
             y = y + (boxCollider.size.y / 2f);
-            if(control.IsFacingForward()) {
+            if(control.ROTATION_DATA.IsFacingForward()) {
                 z = z - (boxCollider.size.z / 2f);
             }
             else {
@@ -119,7 +119,7 @@ namespace Games_tutorial
             GameObject TestingSphere = GameObject.Find("TestingSphere");
             TestingSphere.transform.position = platformEdge;
 
-            if(control.IsFacingForward()) {
+            if(control.ROTATION_DATA.IsFacingForward()) {
                 control.RIGID_BODY.MovePosition(platformEdge + LedgeCalibration);
 
             }
