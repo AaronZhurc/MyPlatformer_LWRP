@@ -146,7 +146,7 @@ namespace Games_tutorial
         }
 
         void CheckDownBlocking(){
-            foreach(GameObject o in control.collisionSpheres.BottomSpheres) {
+            foreach(GameObject o in control.COLLISION_DATA.BottomSpheres) {
                 //CheckRaycastCollision(o,Vector3.down,0.1f,DownBlockingObjs);
                 GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,Vector3.down,0.1f,ref control.animationProgress.CollidingPoint);
                 if(blockingObj != null) {
@@ -159,7 +159,7 @@ namespace Games_tutorial
         }
 
         void CheckUpBlocking(){
-            foreach(GameObject o in control.collisionSpheres.UpSpheres) {
+            foreach(GameObject o in control.COLLISION_DATA.UpSpheres) {
                 //CheckRaycastCollision(o,this.transform.up,0.3f,UpBlockingObjs);
                 GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,this.transform.up,0.1f,ref control.animationProgress.CollidingPoint);
                 if(blockingObj != null) {
@@ -174,17 +174,17 @@ namespace Games_tutorial
 
         void CheckFrontBlocking(){
             if(!control.animationProgress.ForwardIsReversed()){
-                FrontSpheresList=control.collisionSpheres.FrontSpheres;
+                FrontSpheresList=control.COLLISION_DATA.FrontSpheres;
                 DirBlock=1f;
-                foreach(GameObject s in control.collisionSpheres.BackSpheres){
+                foreach(GameObject s in control.COLLISION_DATA.BackSpheres){
                     if(FrontBlockingObjs.ContainsKey(s)){
                         FrontBlockingObjs.Remove(s);
                     }
                 }
             }else{
-                FrontSpheresList=control.collisionSpheres.BackSpheres;
+                FrontSpheresList=control.COLLISION_DATA.BackSpheres;
                 DirBlock=-1f;
-                foreach(GameObject s in control.collisionSpheres.FrontSpheres){
+                foreach(GameObject s in control.COLLISION_DATA.FrontSpheres){
                     if(FrontBlockingObjs.ContainsKey(s)){
                         FrontBlockingObjs.Remove(s);
                     }

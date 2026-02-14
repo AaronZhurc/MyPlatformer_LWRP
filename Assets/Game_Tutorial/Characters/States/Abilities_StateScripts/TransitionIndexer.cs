@@ -169,7 +169,7 @@ namespace Games_tutorial
                             //         return false;
                             //     }
                             // }
-                            foreach(OverlapChecker oc in control.collisionSpheres.FrontOverlapCheckers) {
+                            foreach(OverlapChecker oc in control.COLLISION_DATA.FrontOverlapCheckers) {
                                 if(!oc.ObjIsOverlapping) {
                                     return false;
                                 }
@@ -178,7 +178,7 @@ namespace Games_tutorial
                         }
                     case TransitionConditionType.NOT_BLOCKED_BY_WALL: {
                             bool AllIsOverlapping = true;
-                            foreach(OverlapChecker oc in control.collisionSpheres.FrontOverlapCheckers) {
+                            foreach(OverlapChecker oc in control.COLLISION_DATA.FrontOverlapCheckers) {
                                 if(!oc.ObjIsOverlapping) {
                                     AllIsOverlapping = false;
                                 }

@@ -16,10 +16,10 @@ namespace Games_tutorial
         {
             control=this.transform.root.gameObject.GetComponent<CharacterControl>();
         }
-        private void FixedUpdate()
+        public void UpdateChecker()
         {
             if(control.JUMP_DATA.CheckWallBlock){
-                if(control.collisionSpheres.FrontOverlapCheckers.Contains(this)){
+                if(control.COLLISION_DATA.FrontOverlapCheckers.Contains(this)){
                     ObjIsOverlapping=CheckObj();
                 }
             }else{

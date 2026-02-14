@@ -43,7 +43,7 @@ namespace Games_tutorial {
         public AIProgress aiProgress;
         public DamageDetector damageDetector;
         //public GameObject ColliderEdgePrefab;
-        public CollisionSpheres collisionSpheres;
+        // public CollisionSpheres collisionSpheres;
         public AIController aiController;
         //public List<Collider> CollidingParts=new List<Collider>(); //存储所有接触的身体部位 //我们希望其位于每个触发器所在的位置
         public BoxCollider boxCollider;
@@ -62,6 +62,7 @@ namespace Games_tutorial {
         public MomentumData MOMENTUM_DATA => subComponentProcessor.momentumData;
         public RotationData ROTATION_DATA => subComponentProcessor.rotationData;
         public JumpData JUMP_DATA => subComponentProcessor.jumpData;
+        public CollisionData COLLISION_DATA => subComponentProcessor.collisionData;
 
         public Dataset AIR_CONTROL => dataProcessor.GetDataset(typeof(AirControl));
         
@@ -123,9 +124,9 @@ namespace Games_tutorial {
             // FaceForward(true);
             //SetRagdollParts(); //一定要在下面的操作之前，因为检测点也是collider
 
-            collisionSpheres = GetComponentInChildren<CollisionSpheres>();
-            collisionSpheres.owner = this;
-            collisionSpheres.SetColliderSpheres();
+            // collisionSpheres = GetComponentInChildren<CollisionSpheres>();
+            // collisionSpheres.control = this;
+            
 
             dataProcessor=this.gameObject.GetComponentInChildren<DataProcessor>();
             System.Type[] arr={typeof(AirControl),typeof(SomeDataset)};

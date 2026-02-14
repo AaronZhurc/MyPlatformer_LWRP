@@ -68,7 +68,7 @@ namespace Games_tutorial
             //}
 
             if(control.RIGID_BODY.velocity.y<0f){//只有下落时才检查
-                foreach(GameObject o in control.collisionSpheres.BottomSpheres){
+                foreach(GameObject o in control.COLLISION_DATA.BottomSpheres){
                     // Debug.DrawRay(o.transform.position,-Vector3.up*Distance,Color.yellow);
                     // RaycastHit hit;
                     GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,-Vector3.up,Distance,ref control.animationProgress.CollidingPoint);

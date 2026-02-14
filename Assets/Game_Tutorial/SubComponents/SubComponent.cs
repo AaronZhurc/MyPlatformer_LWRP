@@ -12,6 +12,7 @@ namespace Games_tutorial
         BOX_COLLIDER_UPDATER,
         VERTICAL_VELOCITY,
         DAMAGE_DETECTOR,
+        COLLISION_SPHERES,
     }
     // public enum BoolData {
     //     NONE,
