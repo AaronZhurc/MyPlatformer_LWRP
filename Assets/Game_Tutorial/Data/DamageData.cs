@@ -13,9 +13,16 @@ namespace Games_tutorial
         public TriggerDetector DamagedTrigger;
         public GameObject AttackingPart;
         public AttackInfo BlockedAttack;
+        public float hp;
+
+        public Attack MarioStampAttack;
+        public Attack CrowbarThrow;
 
         public delegate bool ReturnBool();
         public ReturnBool IsDead;
+
+        public delegate void DoSomething(AttackInfo info);
+        public DoSomething TakeDamage;
 
         public void SetData(CharacterControl attacker,Attack attack,TriggerDetector damagedTrigger,GameObject attackingPart)
         {

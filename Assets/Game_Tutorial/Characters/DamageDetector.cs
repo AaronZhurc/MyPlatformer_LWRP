@@ -13,20 +13,16 @@ namespace Games_tutorial
 
         // GeneralBodyPart DamegedPart;
         //public int DamegeTaken;
-        [SerializeField]
-        private float hp;
-
+        
+        [Header("Damage Setup")]
         [SerializeField]
         List<RuntimeAnimatorController> HitReactionList=new List<RuntimeAnimatorController>();
-        
 
-        [Header("Insta Kill")]
-        public RuntimeAnimatorController Assassination_A;
-        public RuntimeAnimatorController Assassination_B;
+        [SerializeField]
+        Attack MarioStampAttack;
+        [SerializeField]
+        Attack CrowbarThrow;
 
-        [Header("Attack")]
-        public Attack MarioStampAttack;
-        public Attack CrowbarThrow;
         void Start() {
             damageData=new DamageData {
                 Attacker=null,
@@ -34,7 +30,11 @@ namespace Games_tutorial
                 AttackingPart=null,
                 Attack=null,
                 BlockedAttack=null,
+                hp=3f,
                 IsDead=IsDead,
+                MarioStampAttack=MarioStampAttack,
+                CrowbarThrow=CrowbarThrow,
+                TakeDamage=TakeDamage,
             };
             subComponentProcessor.damageData=damageData;
             subComponentProcessor.ComponentsDic.Add(SubComponentType.DAMAGE_DETECTOR,this);
@@ -141,7 +141,7 @@ namespace Games_tutorial
         }
 
         bool IsDead(){
-            if(hp<=0f){
+            if(damageData.hp<=0f){
                 return true;
             }else{
                 return false;
@@ -166,11 +166,11 @@ namespace Games_tutorial
             }
             return false;
         }
-        public void TakeDamage(AttackInfo info){
+        void TakeDamage(AttackInfo info){
             if(IsDead()){
                 if(!info.RegisteredTargets.Contains(this.control)){
                     info.RegisteredTargets.Add(this.control);
-                    control.AddForceToDamagePart(true);
+                    control.RAGDOLL_DATA.AddForceToDamagePart(true);
                 }
                 
                 return;
@@ -202,7 +202,7 @@ namespace Games_tutorial
             
             info.CurrentHits++;
             // DamegeTaken++;
-            hp-=info.AttackAbility.Damage;
+            damageData.hp-=info.AttackAbility.Damage;
             
             // if(!info.UseRagdollDeath){
             //     //control.SkinnedMeshAnimator.runtimeAnimatorController=info.AttackAbility.GetDeathAnimator();
@@ -243,40 +243,16 @@ namespace Games_tutorial
             }
         }
 
-        public void TriggerSpikeDeath(RuntimeAnimatorController animator){
-            control.SkinnedMeshAnimator.runtimeAnimatorController = animator;
-        }
+        // public void TriggerSpikeDeath(RuntimeAnimatorController animator){
+        //     control.SkinnedMeshAnimator.runtimeAnimatorController = animator;
+        // }
 
-        public void DeathBySpikes(){
-            damageData.DamagedTrigger = null; //不对身体部位添加任何力
-            hp =0f;
-        }
+        // public void DeathBySpikes(){
+        //     damageData.DamagedTrigger = null; //不对身体部位添加任何力
+        //     damageData.hp =0f;
+        // }
 
-        public void DeathByInstaKill(CharacterControl attacker){
-            control.animationProgress.CurrentRunningAbilities.Clear();
-            attacker.animationProgress.CurrentRunningAbilities.Clear();
-
-            control.RIGID_BODY.useGravity=false;
-            control.boxCollider.enabled=false;
-            control.SkinnedMeshAnimator.runtimeAnimatorController=Assassination_B;
-
-            attacker.RIGID_BODY.useGravity=false;
-            attacker.boxCollider.enabled=false;
-            attacker.SkinnedMeshAnimator.runtimeAnimatorController=Assassination_A;
-            
-            Vector3 dir=control.transform.position-attacker.transform.position;
-
-            if(dir.z < 0f) {
-                attacker.ROTATION_DATA.FaceForward(false);
-            }else if(dir.z>0f){
-                attacker.ROTATION_DATA.FaceForward(true);
-            }
-            
-            control.transform.LookAt(control.transform.position+(attacker.transform.forward*5f),Vector3.up);
-            control.transform.position=attacker.transform.position+attacker.transform.forward*0.45f;
-            
-            hp =0f;
-        }
+        
 
         public override void OnUpdate() {
             if(AttackManager.Instance.CurrentAttacks.Count>0){

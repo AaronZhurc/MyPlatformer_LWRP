@@ -20,6 +20,7 @@ namespace Games_tutorial
         public RotationData rotationData;
         public JumpData jumpData;
         public CollisionData collisionData;
+        public InstaKillData instaKillData;
 
         void Awake() {
             control=GetComponentInParent<CharacterControl>();
@@ -31,6 +32,7 @@ namespace Games_tutorial
             FixedUpdateSubComponent(SubComponentType.BOX_COLLIDER_UPDATER);
             FixedUpdateSubComponent(SubComponentType.VERTICAL_VELOCITY);
             FixedUpdateSubComponent(SubComponentType.COLLISION_SPHERES);
+            FixedUpdateSubComponent(SubComponentType.INSTA_KILL);
         }
 
         public void UpdateSubComponents() {

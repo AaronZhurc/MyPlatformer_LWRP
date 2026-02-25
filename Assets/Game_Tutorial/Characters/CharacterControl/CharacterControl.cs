@@ -41,14 +41,14 @@ namespace Games_tutorial {
         //public LedgeChecker ledgeChecker;
         public AnimationProgress animationProgress;
         public AIProgress aiProgress;
-        public DamageDetector damageDetector;
+        // public DamageDetector damageDetector;
         //public GameObject ColliderEdgePrefab;
         // public CollisionSpheres collisionSpheres;
         public AIController aiController;
         //public List<Collider> CollidingParts=new List<Collider>(); //存储所有接触的身体部位 //我们希望其位于每个触发器所在的位置
         public BoxCollider boxCollider;
         public NavMeshObstacle navMeshObstacle;
-        public InstaKill instaKill;
+        // public InstaKill instaKill;
         
 
         public DataProcessor dataProcessor;
@@ -63,6 +63,7 @@ namespace Games_tutorial {
         public RotationData ROTATION_DATA => subComponentProcessor.rotationData;
         public JumpData JUMP_DATA => subComponentProcessor.jumpData;
         public CollisionData COLLISION_DATA => subComponentProcessor.collisionData;
+        public InstaKillData INSTA_KILL_DATA => subComponentProcessor.instaKillData;
 
         public Dataset AIR_CONTROL => dataProcessor.GetDataset(typeof(AirControl));
         
@@ -111,11 +112,11 @@ namespace Games_tutorial {
             //ledgeChecker = GetComponentInChildren<LedgeChecker>();
             animationProgress = GetComponent<AnimationProgress>();
             aiProgress = GetComponentInChildren<AIProgress>();
-            damageDetector = GetComponentInChildren<DamageDetector>();
+            // damageDetector = GetComponentInChildren<DamageDetector>();
             aiController = GetComponentInChildren<AIController>();
             boxCollider = GetComponent<BoxCollider>();
             navMeshObstacle = GetComponent<NavMeshObstacle>();
-            instaKill = GetComponentInChildren<InstaKill>();
+            // instaKill = GetComponentInChildren<InstaKill>();
 
             // bool SwitchBack=false;
             // if(!IsFacingForward()){
@@ -181,36 +182,12 @@ namespace Games_tutorial {
             TurnOnRagdoll();
         }*/
 
-
-        
-
-        
-
-        public void AddForceToDamagePart(bool zeroVelocity) {
-            //add force
-            if(DAMAGE_DATA.DamagedTrigger != null) {
-                if(zeroVelocity) {
-                    foreach(Collider c in RAGDOLL_DATA.BodyParts) {
-                        c.attachedRigidbody.velocity = Vector3.zero;
-                    }
-                }
-
-                DAMAGE_DATA.DamagedTrigger.GetComponent<Rigidbody>()
-                    .AddForce(DAMAGE_DATA.Attacker.transform.forward * DAMAGE_DATA.Attack.ForwardForce
-                             + DAMAGE_DATA.Attacker.transform.right * DAMAGE_DATA.Attack.RightForce
-                             + DAMAGE_DATA.Attacker.transform.up * DAMAGE_DATA.Attack.UpForce);
-            }
-        }
-
-
         private void Update() {
             subComponentProcessor.UpdateSubComponents();
         }
 
         private void FixedUpdate() {
             subComponentProcessor.FixedUpdateSubComponents();
-            
-            
         }
 
         // public void CreateMiddleSpheres(GameObject start,Vector3 dir,float sec, int interations, List<GameObject> spheresList){

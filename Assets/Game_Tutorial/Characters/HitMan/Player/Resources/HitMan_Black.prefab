@@ -33,7 +33,7 @@ Transform:
   - {fileID: 814673196568642177}
   - {fileID: 4879158626631115516}
   m_Father: {fileID: 6368380984080255181}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &306596278
 MeshFilter:
@@ -127,13 +127,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca11d976358bd734399930c5f15092bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  owner: {fileID: 0}
-  BottomSpheres: []
-  FrontSpheres: []
-  BackSpheres: []
-  UpSpheres: []
-  FrontOverlapCheckers: []
-  AllOverlapCheckers: []
+  collisionData:
+    BottomSpheres: []
+    FrontSpheres: []
+    BackSpheres: []
+    UpSpheres: []
+    FrontOverlapCheckers: []
+    AllOverlapCheckers: []
 --- !u!1 &1184487026
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,7 +224,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6368380984080255181}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2639350230164906742
 MonoBehaviour:
@@ -275,7 +275,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6368380984080255181}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5074247254084337052
 MonoBehaviour:
@@ -350,19 +350,20 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 306596275}
+  - {fileID: 2853494950691089862}
   - {fileID: 803764366947477921}
   - {fileID: 2185794153748562324}
-  - {fileID: 306596275}
   - {fileID: 5454061879603359693}
   - {fileID: 8487889201650142819}
   - {fileID: 2532324212874334713}
-  - {fileID: 2853494950691089862}
   - {fileID: 130877604423040285}
   - {fileID: 8331953421787176639}
   - {fileID: 431073326823848259}
   - {fileID: 481591289}
+  - {fileID: 9059595655719076086}
   m_Father: {fileID: 8730344098475989931}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4287160688119339285
 MonoBehaviour:
@@ -402,6 +403,9 @@ MonoBehaviour:
     DamagedTrigger: {fileID: 0}
     AttackingPart: {fileID: 0}
     BlockedAttack: {fileID: 0}
+    hp: 0
+    MarioStampAttack: {fileID: 0}
+    CrowbarThrow: {fileID: 0}
   momentumData:
     Momentum: 0
   rotationData:
@@ -411,6 +415,16 @@ MonoBehaviour:
     Jumped: 0
     CanWallJump: 0
     CheckWallBlock: 0
+  collisionData:
+    BottomSpheres: []
+    FrontSpheres: []
+    BackSpheres: []
+    UpSpheres: []
+    FrontOverlapCheckers: []
+    AllOverlapCheckers: []
+  instaKillData:
+    Animation_A: {fileID: 0}
+    Animation_B: {fileID: 0}
 --- !u!1 &3239597521516711577
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,7 +499,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6368380984080255181}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1346797794373540896
 MonoBehaviour:
@@ -558,7 +572,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6368380984080255181}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6559651023454629200
 MonoBehaviour:
@@ -711,7 +725,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6368380984080255181}
-  m_RootOrder: 6
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3376737365993360691
 MonoBehaviour:
@@ -731,12 +745,12 @@ MonoBehaviour:
     DamagedTrigger: {fileID: 0}
     AttackingPart: {fileID: 0}
     BlockedAttack: {fileID: 0}
-  hp: 5
+    hp: 0
+    MarioStampAttack: {fileID: 0}
+    CrowbarThrow: {fileID: 0}
   HitReactionList:
   - {fileID: 9100000, guid: 32691bcb98ded2e4ea33f88983f2aca1, type: 2}
   - {fileID: 9100000, guid: cdaefa21c8d003e43874360a48de6971, type: 2}
-  Assassination_A: {fileID: 9100000, guid: c6d16d1a55321074f8064ed3aa7116ed, type: 2}
-  Assassination_B: {fileID: 9100000, guid: de09ae04b58c6ad458c81d7d45cac918, type: 2}
   MarioStampAttack: {fileID: 11400000, guid: 1e8ccb956f4a47c46987e8df19a1b8e2, type: 2}
   CrowbarThrow: {fileID: 11400000, guid: dbc59dd966992c844bc59831d35e13ff, type: 2}
 --- !u!1 &8203834771194551997
@@ -867,12 +881,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8573072317407429263}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 8730344098475989931}
-  m_RootOrder: 2
+  m_Father: {fileID: 6368380984080255181}
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8341044229997368145
 MonoBehaviour:
@@ -886,6 +900,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb1a6d93f48d3354b9585a1991685abc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  instaKillData:
+    Animation_A: {fileID: 0}
+    Animation_B: {fileID: 0}
+  Assassination_A: {fileID: 9100000, guid: c6d16d1a55321074f8064ed3aa7116ed, type: 2}
+  Assassination_B: {fileID: 9100000, guid: de09ae04b58c6ad458c81d7d45cac918, type: 2}
 --- !u!1 &8624023440573899102
 GameObject:
   m_ObjectHideFlags: 0
@@ -915,7 +934,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6368380984080255181}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7939741109725620915
 MonoBehaviour:
@@ -968,7 +987,6 @@ Transform:
   m_Children:
   - {fileID: 7062148499677157012}
   - {fileID: 1621971892}
-  - {fileID: 9059595655719076086}
   - {fileID: 6368380984080255181}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1018,11 +1036,9 @@ MonoBehaviour:
   animationProgress: {fileID: 0}
   aiProgress: {fileID: 0}
   damageDetector: {fileID: 0}
-  collisionSpheres: {fileID: 0}
   aiController: {fileID: 0}
   boxCollider: {fileID: 0}
   navMeshObstacle: {fileID: 0}
-  instaKill: {fileID: 0}
   dataProcessor: {fileID: 0}
   playableCharacterType: 2
   SkinnedMeshAnimator: {fileID: 7062148499684882670}

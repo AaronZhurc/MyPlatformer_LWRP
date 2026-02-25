@@ -58,16 +58,16 @@ namespace Games_tutorial
             if(w.IsThrown) {
                 if(w.Thrower != control) {
                     AttackInfo info=new AttackInfo();
-                    info.CopyInfo(control.damageDetector.CrowbarThrow, control);
+                    info.CopyInfo(control.DAMAGE_DATA.CrowbarThrow, control);
 
                     // control.DAMAGE_DATA.DamagedTrigger=this;
                     // control.DAMAGE_DATA.Attack=control.damageDetector.CrowbarThrow;
                     // control.DAMAGE_DATA.Attacker=w.Thrower;
                     // control.DAMAGE_DATA.AttackingPart=w.Thrower.RightHand_Attack;
 
-                    control.DAMAGE_DATA.SetData(w.Thrower,control.damageDetector.CrowbarThrow,this,null);
+                    control.DAMAGE_DATA.SetData(w.Thrower,control.DAMAGE_DATA.CrowbarThrow,this,null);
 
-                    control.damageDetector.TakeDamage(info);
+                    control.DAMAGE_DATA.TakeDamage(info);
 
                     if(w.FlyForward){
                         w.transform.rotation=Quaternion.Euler(0f,90f,45f);

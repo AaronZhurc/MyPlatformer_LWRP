@@ -111,7 +111,7 @@ namespace Games_tutorial
 
                 foreach(CharacterControl c in MarioStompTargets) {
                     AttackInfo info=new AttackInfo();
-                    info.CopyInfo(control.damageDetector.MarioStampAttack, control);
+                    info.CopyInfo(control.DAMAGE_DATA.MarioStampAttack, control);
 
                     int index=Random.Range(0,c.RAGDOLL_DATA.BodyParts.Count);
                     TriggerDetector randomPart=c.RAGDOLL_DATA.BodyParts[index].GetComponent<TriggerDetector>();
@@ -119,9 +119,9 @@ namespace Games_tutorial
                     // c.DAMAGE_DATA.Attacker=control;
                     // c.DAMAGE_DATA.AttackingPart=control.RightFoot_Attack;
 
-                    c.DAMAGE_DATA.SetData(control,control.damageDetector.MarioStampAttack,randomPart,control.RightFoot_Attack);
+                    c.DAMAGE_DATA.SetData(control,control.DAMAGE_DATA.MarioStampAttack,randomPart,control.RightFoot_Attack);
 
-                    c.damageDetector.TakeDamage(info);
+                    c.DAMAGE_DATA.TakeDamage(info);
                 }
 
                 MarioStompTargets.Clear();

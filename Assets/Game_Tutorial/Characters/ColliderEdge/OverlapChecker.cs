@@ -18,6 +18,9 @@ namespace Games_tutorial
         }
         public void UpdateChecker()
         {
+            if(control == null) {
+                return;
+            }
             if(control.JUMP_DATA.CheckWallBlock){
                 if(control.COLLISION_DATA.FrontOverlapCheckers.Contains(this)){
                     ObjIsOverlapping=CheckObj();

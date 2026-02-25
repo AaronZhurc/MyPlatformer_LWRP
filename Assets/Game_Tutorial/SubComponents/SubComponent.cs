@@ -13,6 +13,7 @@ namespace Games_tutorial
         VERTICAL_VELOCITY,
         DAMAGE_DETECTOR,
         COLLISION_SPHERES,
+        INSTA_KILL,
     }
     // public enum BoolData {
     //     NONE,

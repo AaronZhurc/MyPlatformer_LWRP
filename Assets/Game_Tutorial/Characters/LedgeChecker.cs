@@ -6,6 +6,7 @@ namespace Games_tutorial
 {
     public class LedgeChecker:SubComponent {
         public LedgeGrabData ledgeGrabData;
+        [Header("Ledge Setup")]
         [SerializeField] Vector3 LedgeCalibration = new Vector3();
         // Ledge CheckLedge = null;
         //CharacterControl control;

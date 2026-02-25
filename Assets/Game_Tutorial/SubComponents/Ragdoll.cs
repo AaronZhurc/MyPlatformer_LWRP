@@ -13,6 +13,7 @@ namespace Games_tutorial
                 RagdollTriggered=false,
                 BodyParts=new List<Collider>(),
                 GetBody=GetBodyPart,
+                AddForceToDamagePart=AddForceToDamagePart,
             };
             SetupBodyParts();
             subComponentProcessor.ragdollData=ragdollData;
@@ -111,7 +112,7 @@ namespace Games_tutorial
                 c.attachedRigidbody.velocity = Vector3.zero; //对于陷阱，需要在这里关闭速度以不添加力
             }
 
-            control.AddForceToDamagePart(false);
+            AddForceToDamagePart(false);
         }
 
         Collider GetBodyPart(string name) {
@@ -121,6 +122,22 @@ namespace Games_tutorial
                 }
             }
             return null;
+        }
+
+        void AddForceToDamagePart(bool zeroVelocity) {
+            //add force
+            if(control.DAMAGE_DATA.DamagedTrigger != null) {
+                if(zeroVelocity) {
+                    foreach(Collider c in ragdollData.BodyParts) {
+                        c.attachedRigidbody.velocity = Vector3.zero;
+                    }
+                }
+
+                control.DAMAGE_DATA.DamagedTrigger.GetComponent<Rigidbody>()
+                    .AddForce(control.DAMAGE_DATA.Attacker.transform.forward * control.DAMAGE_DATA.Attack.ForwardForce
+                             + control.DAMAGE_DATA.Attacker.transform.right * control.DAMAGE_DATA.Attack.RightForce
+                             + control.DAMAGE_DATA.Attacker.transform.up * control.DAMAGE_DATA.Attack.UpForce);
+            }
         }
     }
 }

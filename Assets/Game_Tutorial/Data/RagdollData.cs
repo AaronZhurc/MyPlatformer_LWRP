@@ -11,5 +11,8 @@ namespace Games_tutorial
 
         public delegate Collider GetCollider(string name);
         public GetCollider GetBody;
+
+        public delegate void DoSomething(bool boolData);
+        public DoSomething AddForceToDamagePart;
     }
 }
