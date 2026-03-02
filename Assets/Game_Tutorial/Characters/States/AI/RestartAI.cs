@@ -33,7 +33,7 @@ namespace Games_tutorial
             }
 
             //landing
-            if(control.animationProgress.IsRunning(typeof(Landing))){
+            if(control.ANIMATION_DATA.IsRunning(typeof(Landing))){
                 control.Turbo=false;
                 control.Jump=false;
                 control.MoveUp=false;
@@ -59,9 +59,9 @@ namespace Games_tutorial
                 // }
             }
             if(control.aiProgress.BlockCharacter!=null){
-                if(control.animationProgress.Ground!=null){
-                    if(!control.animationProgress.IsRunning(typeof(Jump))
-                       && !control.animationProgress.IsRunning(typeof(JumpPrep))){
+                if(characterState.GROUND_DATA.Ground!=null){
+                    if(!control.ANIMATION_DATA.IsRunning(typeof(Jump))
+                       && !control.ANIMATION_DATA.IsRunning(typeof(JumpPrep))){
                         control.Turbo=false;
                         control.Jump=false;
                         control.MoveUp=false;
@@ -74,9 +74,9 @@ namespace Games_tutorial
             }
 
             //startsphere height
-            if(control.animationProgress.Ground!=null
-               && !control.animationProgress.IsRunning(typeof(Jump))
-               && !control.animationProgress.IsRunning(typeof(WallJump_Prep))){
+            if(characterState.GROUND_DATA.Ground!=null
+               && !control.ANIMATION_DATA.IsRunning(typeof(Jump))
+               && !control.ANIMATION_DATA.IsRunning(typeof(WallJump_Prep))){
                 if(control.aiProgress.GetStartSphereHeight()>0.1f){
                     control.Turbo=false;
                     control.Jump=false;
@@ -90,7 +90,7 @@ namespace Games_tutorial
         }
 
         bool AIIsOnGround(CharacterControl control) {
-            if(control.animationProgress.IsRunning(typeof(MoveUp))) {
+            if(control.ANIMATION_DATA.IsRunning(typeof(MoveUp))) {
                 return false;
             }
             if(control.RIGID_BODY.useGravity) {

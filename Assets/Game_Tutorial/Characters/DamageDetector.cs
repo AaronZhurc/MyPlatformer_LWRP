@@ -40,7 +40,7 @@ namespace Games_tutorial
             subComponentProcessor.ComponentsDic.Add(SubComponentType.DAMAGE_DETECTOR,this);
         }
 
-        private bool AttackIsValid(AttackInfo info){
+        private bool AttackIsValid(AttackCondition info){
             if(info==null){
                 return false;
             }
@@ -70,7 +70,7 @@ namespace Games_tutorial
             return true;
         }
         private void CheckAttack(){
-            foreach (AttackInfo info in AttackManager.Instance.CurrentAttacks)
+            foreach (AttackCondition info in AttackManager.Instance.CurrentAttacks)
             {
                 if(AttackIsValid(info)){
                     if(info.MustCollide){
@@ -87,7 +87,7 @@ namespace Games_tutorial
                 }
             }
         }
-        private bool IsColllided(AttackInfo info){
+        private bool IsColllided(AttackCondition info){
             foreach(KeyValuePair<TriggerDetector,List<Collider>> data in control.animationProgress.CollidingBodyParts){
                 foreach(Collider collider in data.Value){
                     foreach(AttackPartType part in info.AttackParts){
@@ -122,7 +122,7 @@ namespace Games_tutorial
             return false;
         }
 
-        private bool IsInLethalRange(AttackInfo info){
+        private bool IsInLethalRange(AttackCondition info){
             foreach(Collider c in control.RAGDOLL_DATA.BodyParts){
                 float dist=Vector3.SqrMagnitude(c.transform.position-info.Attacker.transform.position);
                 //Debug.Log(this.gameObject.name+" dist: "+dist.ToString());
@@ -148,11 +148,11 @@ namespace Games_tutorial
             }
         }
 
-        bool IsBlocked(AttackInfo info) {
+        bool IsBlocked(AttackCondition info) {
             if(info == damageData.BlockedAttack && damageData.BlockedAttack != null) {
                 return true;
             }
-            if(control.animationProgress.IsRunning(typeof(Block))) {
+            if(control.ANIMATION_DATA.IsRunning(typeof(Block))) {
                 Vector3 dir = info.Attacker.transform.position - control.transform.position;
                 if(dir.z > 0f) {
                     if(control.ROTATION_DATA.IsFacingForward()) {
@@ -166,7 +166,7 @@ namespace Games_tutorial
             }
             return false;
         }
-        void TakeDamage(AttackInfo info){
+        void TakeDamage(AttackCondition info){
             if(IsDead()){
                 if(!info.RegisteredTargets.Contains(this.control)){
                     info.RegisteredTargets.Add(this.control);
@@ -214,7 +214,7 @@ namespace Games_tutorial
 
             AttackManager.Instance.ForceDeregister(control);
 
-            control.animationProgress.CurrentRunningAbilities.Clear();
+            control.ANIMATION_DATA.CurrentRunningAbilities.Clear();
 
             if(IsDead()){
                 control.RAGDOLL_DATA.RagdollTriggered=true;

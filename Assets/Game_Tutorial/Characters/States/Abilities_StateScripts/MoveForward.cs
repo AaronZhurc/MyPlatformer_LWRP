@@ -91,7 +91,7 @@ namespace Games_tutorial
                 return;
             }
 
-            if(characterState.characterControl.animationProgress.IsRunning(typeof(WallSlide))){
+            if(characterState.ANIMATION_DATA.IsRunning(typeof(WallSlide))){
                 return;
             }
 
@@ -105,9 +105,9 @@ namespace Games_tutorial
 
             
             if(control.Jump){
-                if(control.animationProgress.Ground!=null){
-                    animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Jump],true);
-                }
+                // if(control.GROUND_DATA.Ground!=null){
+                //     animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Jump],true);
+                // }
             }
             if(control.Turbo){
                 animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Turbo],true);

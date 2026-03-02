@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Games_tutorial
 {
-    public class AttackInfo : MonoBehaviour
+    public class AttackCondition : MonoBehaviour
     {
         public CharacterControl Attacker=null; //攻击者
         public Attack AttackAbility; 

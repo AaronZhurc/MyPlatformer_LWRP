@@ -6,11 +6,11 @@ namespace Games_tutorial
 {
     public class CollisionSpheres : SubComponent
     {
-        public CollisionData collisionData;
+        public CollisionSphereData collisionSphereData;
         
         // Start is called before the first frame update
         void Start() {
-            collisionData=new CollisionData {
+            collisionSphereData=new CollisionSphereData {
                 BottomSpheres=new List<GameObject>(),
                 FrontSpheres=new List<GameObject>(),
                 BackSpheres=new List<GameObject>(),
@@ -23,10 +23,14 @@ namespace Games_tutorial
                 Reposition_BottomSpheres=Reposition_BottomSpheres,
                 Reposition_UpSpheres=Reposition_UpSpheres,
             };
-            subComponentProcessor.collisionData=collisionData;
+            subComponentProcessor.collisionSphereData=collisionSphereData;
             subComponentProcessor.ComponentsDic.Add(SubComponentType.COLLISION_SPHERES,this);
 
             SetColliderSpheres();
+        }
+
+        GameObject LoadCollisionSphere(){
+            return Instantiate(Resources.Load("CollisionSphere",typeof(GameObject)),Vector3.zero,Quaternion.identity) as GameObject;
         }
 
         void SetColliderSpheres(){
@@ -60,41 +64,41 @@ namespace Games_tutorial
             
             //bottom
             for(int i=0;i<5;i++){
-                GameObject obj=Instantiate(Resources.Load("ColliderEdge",typeof(GameObject)),Vector3.zero,Quaternion.identity) as GameObject;
-                collisionData.BottomSpheres.Add(obj);
+                GameObject obj=LoadCollisionSphere();
+                collisionSphereData.BottomSpheres.Add(obj);
                 obj.transform.parent=this.transform.Find("Bottom");
             }
             Reposition_BottomSpheres();
 
             //up
             for(int i=0;i<5;i++){
-                GameObject obj=Instantiate(Resources.Load("ColliderEdge",typeof(GameObject)),Vector3.zero,Quaternion.identity) as GameObject;
-                collisionData.UpSpheres.Add(obj);
+                GameObject obj=LoadCollisionSphere();
+                collisionSphereData.UpSpheres.Add(obj);
                 obj.transform.parent=this.transform.Find("Up");
             }
             Reposition_UpSpheres();
             
             //front
             for(int i=0;i<10;i++){
-                GameObject obj=Instantiate(Resources.Load("ColliderEdge",typeof(GameObject)),Vector3.zero,Quaternion.identity) as GameObject;
-                collisionData.FrontSpheres.Add(obj);
-                collisionData.FrontOverlapCheckers.Add(obj.GetComponent<OverlapChecker>());
+                GameObject obj=LoadCollisionSphere();
+                collisionSphereData.FrontSpheres.Add(obj);
+                collisionSphereData.FrontOverlapCheckers.Add(obj.GetComponent<OverlapChecker>());
                 obj.transform.parent=this.transform.Find("Front");
             }
             Reposition_FrontSpheres();
 
             //back
             for(int i=0;i<10;i++){
-                GameObject obj=Instantiate(Resources.Load("ColliderEdge",typeof(GameObject)),Vector3.zero,Quaternion.identity) as GameObject;
-                collisionData.BackSpheres.Add(obj);
+                GameObject obj=LoadCollisionSphere();
+                collisionSphereData.BackSpheres.Add(obj);
                 obj.transform.parent=this.transform.Find("Back");
             }
             Reposition_BackSpheres();
 
             //add everything
             OverlapChecker[] arr=this.gameObject.GetComponentsInChildren<OverlapChecker>();
-            collisionData.AllOverlapCheckers.Clear();
-            collisionData.AllOverlapCheckers.AddRange(arr);
+            collisionSphereData.AllOverlapCheckers.Clear();
+            collisionSphereData.AllOverlapCheckers.AddRange(arr);
         }
 
         void Reposition_FrontSpheres(){
@@ -105,12 +109,12 @@ namespace Games_tutorial
             float front=boxCollider.bounds.center.z+boxCollider.bounds.size.z/2f;
             //float back=boxCollider.bounds.center.z-boxCollider.bounds.extents.z;
         
-            collisionData.FrontSpheres[0].transform.localPosition=new Vector3(0f,bottom+0.05f,front)-control.transform.position;
-            collisionData.FrontSpheres[1].transform.localPosition=new Vector3(0f,top,front)-control.transform.position;
+            collisionSphereData.FrontSpheres[0].transform.localPosition=new Vector3(0f,bottom+0.05f,front)-control.transform.position;
+            collisionSphereData.FrontSpheres[1].transform.localPosition=new Vector3(0f,top,front)-control.transform.position;
 
             float interval=(top-bottom+0.05f)/9;
-            for(int i=2;i<collisionData.FrontSpheres.Count;i++){
-                collisionData.FrontSpheres[i].transform.localPosition=new Vector3(0f,bottom+(interval*(i-1)),front)-control.transform.position;
+            for(int i=2;i<collisionSphereData.FrontSpheres.Count;i++){
+                collisionSphereData.FrontSpheres[i].transform.localPosition=new Vector3(0f,bottom+(interval*(i-1)),front)-control.transform.position;
             }
         }   
 
@@ -122,12 +126,12 @@ namespace Games_tutorial
             float back=boxCollider.bounds.center.z-boxCollider.bounds.size.z/2f;
             //float back=boxCollider.bounds.center.z-boxCollider.bounds.extents.z;
         
-            collisionData.BackSpheres[0].transform.localPosition=new Vector3(0f,bottom+0.05f,back)-control.transform.position;
-            collisionData.BackSpheres[1].transform.localPosition=new Vector3(0f,top,back)-control.transform.position;
+            collisionSphereData.BackSpheres[0].transform.localPosition=new Vector3(0f,bottom+0.05f,back)-control.transform.position;
+            collisionSphereData.BackSpheres[1].transform.localPosition=new Vector3(0f,top,back)-control.transform.position;
 
             float interval=(top-bottom+0.05f)/9;
-            for(int i=2;i<collisionData.BackSpheres.Count;i++){
-                collisionData.BackSpheres[i].transform.localPosition=new Vector3(0f,bottom+(interval*(i-1)),back)-control.transform.position;
+            for(int i=2;i<collisionSphereData.BackSpheres.Count;i++){
+                collisionSphereData.BackSpheres[i].transform.localPosition=new Vector3(0f,bottom+(interval*(i-1)),back)-control.transform.position;
             }
         }   
 
@@ -139,12 +143,12 @@ namespace Games_tutorial
             float front=boxCollider.bounds.center.z+boxCollider.bounds.size.z/2f;
             float back=boxCollider.bounds.center.z-boxCollider.bounds.size.z/2f;
         
-            collisionData.BottomSpheres[0].transform.localPosition=new Vector3(0f,bottom,back)-control.transform.position;
-            collisionData.BottomSpheres[1].transform.localPosition=new Vector3(0f,bottom,front)-control.transform.position;
+            collisionSphereData.BottomSpheres[0].transform.localPosition=new Vector3(0f,bottom,back)-control.transform.position;
+            collisionSphereData.BottomSpheres[1].transform.localPosition=new Vector3(0f,bottom,front)-control.transform.position;
 
             float interval=(front-back)/4;
-            for(int i=2;i<collisionData.BottomSpheres.Count;i++){
-                collisionData.BottomSpheres[i].transform.localPosition=new Vector3(0f,bottom,back+(interval*(i-1)))-control.transform.position;
+            for(int i=2;i<collisionSphereData.BottomSpheres.Count;i++){
+                collisionSphereData.BottomSpheres[i].transform.localPosition=new Vector3(0f,bottom,back+(interval*(i-1)))-control.transform.position;
             }
         }   
 
@@ -156,12 +160,12 @@ namespace Games_tutorial
             float front=boxCollider.bounds.center.z+boxCollider.bounds.size.z/2f;
             float back=boxCollider.bounds.center.z-boxCollider.bounds.size.z/2f;
         
-            collisionData.UpSpheres[0].transform.localPosition=new Vector3(0f,top,back)-control.transform.position;
-            collisionData.UpSpheres[1].transform.localPosition=new Vector3(0f,top,front)-control.transform.position;
+            collisionSphereData.UpSpheres[0].transform.localPosition=new Vector3(0f,top,back)-control.transform.position;
+            collisionSphereData.UpSpheres[1].transform.localPosition=new Vector3(0f,top,front)-control.transform.position;
 
             float interval=(front-back)/4;
-            for(int i=2;i<collisionData.UpSpheres.Count;i++){
-                collisionData.UpSpheres[i].transform.localPosition=new Vector3(0f,top,back+(interval*(i-1)))-control.transform.position;
+            for(int i=2;i<collisionSphereData.UpSpheres.Count;i++){
+                collisionSphereData.UpSpheres[i].transform.localPosition=new Vector3(0f,top,back+(interval*(i-1)))-control.transform.position;
             }
         }
 
@@ -170,7 +174,7 @@ namespace Games_tutorial
         }
 
         public override void OnFixedUpdate() {
-            foreach(OverlapChecker checker in collisionData.AllOverlapCheckers) {
+            foreach(OverlapChecker checker in collisionSphereData.AllOverlapCheckers) {
                 checker.UpdateChecker();
             }
         }

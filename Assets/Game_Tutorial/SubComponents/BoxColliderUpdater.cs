@@ -27,10 +27,10 @@ namespace Games_tutorial
             UpdateBoxCollider_Center();
 
             if(boxColliderData.IsUpdatingSpheres) {
-                control.COLLISION_DATA.Reposition_FrontSpheres();
-                control.COLLISION_DATA.Reposition_BackSpheres();
-                control.COLLISION_DATA.Reposition_BottomSpheres();
-                control.COLLISION_DATA.Reposition_UpSpheres();
+                control.COLLISION_SPHERE_DATA.Reposition_FrontSpheres();
+                control.COLLISION_SPHERE_DATA.Reposition_BackSpheres();
+                control.COLLISION_SPHERE_DATA.Reposition_BottomSpheres();
+                control.COLLISION_SPHERE_DATA.Reposition_UpSpheres();
                 if(boxColliderData.IsLanding) {
                     control.RIGID_BODY.MovePosition(new Vector3(0f, boxColliderData.LandingPosition.y, this.transform.position.z));
                     
@@ -42,7 +42,7 @@ namespace Games_tutorial
             // if(!animationProgress.UpdatingBoxCollider){
             //     return;
             // }
-            if(!control.animationProgress.IsRunning(typeof(UpdateBoxCollider))) {
+            if(!control.ANIMATION_DATA.IsRunning(typeof(UpdateBoxCollider))) {
                 return;
             }
             if(Vector3.SqrMagnitude(control.boxCollider.size - boxColliderData.TargetSize) > 0.00001f) {
@@ -55,7 +55,7 @@ namespace Games_tutorial
             // if(!animationProgress.UpdatingBoxCollider){
             //     return;
             // }
-            if(!control.animationProgress.IsRunning(typeof(UpdateBoxCollider))) {
+            if(!control.ANIMATION_DATA.IsRunning(typeof(UpdateBoxCollider))) {
                 return;
             }
             if(Vector3.SqrMagnitude(control.boxCollider.center - boxColliderData.TargetCenter) > 0.0001f) {

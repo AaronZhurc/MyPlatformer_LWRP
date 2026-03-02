@@ -17,7 +17,10 @@ namespace Games_tutorial
         public MomentumData MOMENTUM_DATA => characterControl.subComponentProcessor.momentumData;
         public RotationData ROTATION_DATA => characterControl.subComponentProcessor.rotationData;
         public JumpData JUMP_DATA => characterControl.subComponentProcessor.jumpData;
-        public CollisionData COLLISION_DATA => characterControl.subComponentProcessor.collisionData;
+        public CollisionSphereData COLLISION_SPHERE_DATA => characterControl.subComponentProcessor.collisionSphereData;
+        public GroundData GROUND_DATA => characterControl.subComponentProcessor.groundData;
+        public AttackData ATTACK_DATA => characterControl.subComponentProcessor.attackData;
+        public AnimationData ANIMATION_DATA => characterControl.subComponentProcessor.animationData;
         
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -29,10 +32,10 @@ namespace Games_tutorial
             foreach(StateData d in ListAbilityData){
                 d.OnEnter(this,animator,stateInfo);
 
-                if(characterControl.animationProgress.CurrentRunningAbilities.ContainsKey(d)){
-                    characterControl.animationProgress.CurrentRunningAbilities[d]+=1;
+                if(characterControl.ANIMATION_DATA.CurrentRunningAbilities.ContainsKey(d)){
+                    characterControl.ANIMATION_DATA.CurrentRunningAbilities[d]+=1;
                 }else{
-                    characterControl.animationProgress.CurrentRunningAbilities.Add(d,1);
+                    characterControl.ANIMATION_DATA.CurrentRunningAbilities.Add(d,1);
                 }
             }
         }
@@ -52,10 +55,10 @@ namespace Games_tutorial
         {
             foreach(StateData d in ListAbilityData){
                 d.OnExit(this,animator,stateInfo);
-                if(characterControl.animationProgress.CurrentRunningAbilities.ContainsKey(d)){
-                    characterControl.animationProgress.CurrentRunningAbilities[d]-=1;
-                    if(characterControl.animationProgress.CurrentRunningAbilities[d]<=0){
-                        characterControl.animationProgress.CurrentRunningAbilities.Remove(d);
+                if(characterControl.ANIMATION_DATA.CurrentRunningAbilities.ContainsKey(d)){
+                    characterControl.ANIMATION_DATA.CurrentRunningAbilities[d]-=1;
+                    if(characterControl.ANIMATION_DATA.CurrentRunningAbilities[d]<=0){
+                        characterControl.ANIMATION_DATA.CurrentRunningAbilities.Remove(d);
                     }
                 }
                 

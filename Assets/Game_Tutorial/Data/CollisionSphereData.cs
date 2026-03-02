@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Games_tutorial
 {
     [System.Serializable]
-    public class CollisionData
+    public class CollisionSphereData
     {
         public List<GameObject> BottomSpheres;
         public List<GameObject> FrontSpheres=new List<GameObject>();

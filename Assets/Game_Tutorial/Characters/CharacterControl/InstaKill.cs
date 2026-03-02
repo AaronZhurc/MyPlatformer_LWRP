@@ -47,11 +47,11 @@ namespace Games_tutorial
                         continue;
                     }
 
-                    if(c.animationProgress.IsRunning(typeof(Attack))){
+                    if(c.ANIMATION_DATA.IsRunning(typeof(Attack))){
                         continue;
                     }
 
-                    if(control.animationProgress.IsRunning(typeof(Attack))) {
+                    if(control.ANIMATION_DATA.IsRunning(typeof(Attack))) {
                         continue;
                     }
 
@@ -76,8 +76,8 @@ namespace Games_tutorial
         }
 
         void DeathByInstaKill(CharacterControl attacker){
-            control.animationProgress.CurrentRunningAbilities.Clear();
-            attacker.animationProgress.CurrentRunningAbilities.Clear();
+            control.ANIMATION_DATA.CurrentRunningAbilities.Clear();
+            attacker.ANIMATION_DATA.CurrentRunningAbilities.Clear();
 
             control.RIGID_BODY.useGravity=false;
             control.boxCollider.enabled=false;

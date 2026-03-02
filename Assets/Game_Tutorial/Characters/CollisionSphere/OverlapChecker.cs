@@ -22,7 +22,7 @@ namespace Games_tutorial
                 return;
             }
             if(control.JUMP_DATA.CheckWallBlock){
-                if(control.COLLISION_DATA.FrontOverlapCheckers.Contains(this)){
+                if(control.COLLISION_SPHERE_DATA.FrontOverlapCheckers.Contains(this)){
                     ObjIsOverlapping=CheckObj();
                 }
             }else{

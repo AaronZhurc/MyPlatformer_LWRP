@@ -57,7 +57,7 @@ namespace Games_tutorial
             }
             if(w.IsThrown) {
                 if(w.Thrower != control) {
-                    AttackInfo info=new AttackInfo();
+                    AttackCondition info=new AttackCondition();
                     info.CopyInfo(control.DAMAGE_DATA.CrowbarThrow, control);
 
                     // control.DAMAGE_DATA.DamagedTrigger=this;

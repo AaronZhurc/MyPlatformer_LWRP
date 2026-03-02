@@ -19,8 +19,11 @@ namespace Games_tutorial
         public MomentumData momentumData;
         public RotationData rotationData;
         public JumpData jumpData;
-        public CollisionData collisionData;
+        public CollisionSphereData collisionSphereData;
         public InstaKillData instaKillData;
+        public GroundData groundData;
+        public AttackData attackData;
+        public AnimationData animationData;
 
         void Awake() {
             control=GetComponentInParent<CharacterControl>();
@@ -38,6 +41,8 @@ namespace Games_tutorial
         public void UpdateSubComponents() {
             UpdateSubComponent(SubComponentType.MANUAL_INPUT);
             UpdateSubComponent(SubComponentType.DAMAGE_DETECTOR);
+            UpdateSubComponent(SubComponentType.PLAYER_ATTACK);
+            UpdateSubComponent(SubComponentType.PLAYER_ANIMATION);
         }
 
         void UpdateSubComponent(SubComponentType type) {

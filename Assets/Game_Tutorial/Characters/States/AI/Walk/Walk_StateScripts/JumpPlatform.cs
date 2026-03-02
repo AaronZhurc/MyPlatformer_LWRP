@@ -31,7 +31,7 @@ namespace Games_tutorial
             //               -control.collisionSpheres.FrontSpheres[1].transform.position.y;
 
             float platformDist=control.aiProgress.pathfindingAgent.EndSphere.transform.position.y
-                          -control.COLLISION_DATA.FrontSpheres[0].transform.position.y;
+                          -control.COLLISION_SPHERE_DATA.FrontSpheres[0].transform.position.y;
 
             if(platformDist>0.5f){
                 if(control.aiProgress.pathfindingAgent.StartSphere.transform.position.z

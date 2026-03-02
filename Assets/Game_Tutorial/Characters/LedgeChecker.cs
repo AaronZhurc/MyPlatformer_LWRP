@@ -117,8 +117,8 @@ namespace Games_tutorial
 
             Vector3 platformEdge = new Vector3(0f, y, z);
 
-            GameObject TestingSphere = GameObject.Find("TestingSphere");
-            TestingSphere.transform.position = platformEdge;
+            // GameObject TestingSphere = GameObject.Find("TestingSphere");
+            // TestingSphere.transform.position = platformEdge;
 
             if(control.ROTATION_DATA.IsFacingForward()) {
                 control.RIGID_BODY.MovePosition(platformEdge + LedgeCalibration);

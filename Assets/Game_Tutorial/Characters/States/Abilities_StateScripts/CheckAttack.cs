@@ -15,7 +15,7 @@ namespace Games_tutorial
         {
             // CharacterControl control=characterState.GetCharacterControl(animator);
 
-            if(characterState.characterControl.animationProgress.AttackTriggered/*control.Attack*/){
+            if(characterState.ATTACK_DATA.AttackTriggered/*control.Attack*/){
                 animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Attack],true);
                 // characterState.characterControl.animationProgress.AttackTriggered=false;
             }

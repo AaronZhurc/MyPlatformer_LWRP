@@ -7,7 +7,7 @@ namespace Games_tutorial
 {
     public class AnimationProgress : MonoBehaviour
     {
-        public Dictionary<StateData,int> CurrentRunningAbilities=new Dictionary<StateData,int>();
+        
         public bool CameraShaken;
 
         public List<PoolObjectType> PoolObjectList=new List<PoolObjectType>(); 
@@ -17,9 +17,7 @@ namespace Games_tutorial
         public MoveUp LatestMoveUp;
 
 
-        [Header("Attack Button")]
-        public bool AttackTriggered;
-        public bool AttackButtonIsReset;
+       
 
         [Header("GroundMovement")]
         // public bool IsLanding;
@@ -28,10 +26,9 @@ namespace Games_tutorial
         
 
         [Header("Collding Objects")]
-        public GameObject Ground;
         public Dictionary<TriggerDetector,List<Collider>> CollidingWeapons=new Dictionary<TriggerDetector, List<Collider>>();
         public Dictionary<TriggerDetector,List<Collider>> CollidingBodyParts=new Dictionary<TriggerDetector, List<Collider>>();
-        public Vector3 CollidingPoint=new Vector3();
+        
 
         // [Header("AirControl")]
         // public bool Jumped;
@@ -56,34 +53,7 @@ namespace Games_tutorial
             //PressTime=0f;
         }
         private void Update(){
-            if(control.Attack){
-                // PressTime+=Time.deltaTime;
-                if(AttackButtonIsReset){
-                    AttackTriggered=true;
-                    AttackButtonIsReset=false;
-                }
-            }else{
-                // PressTime=0f;
-                AttackButtonIsReset=true;
-                AttackTriggered=false;
-            }
-            // if(PressTime==0f){
-            //     AttackTriggered=false;
-            // }else if(PressTime>MaxPressTime){
-            //     AttackTriggered=false;
-            // }else{
-            //     AttackTriggered=true;
-            // }
-
-            if(IsRunning(typeof(LockTransition))){
-                if(control.animationProgress.LockTransition){
-                    control.SkinnedMeshAnimator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.LockTransition],true);
-                }else{
-                    control.SkinnedMeshAnimator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.LockTransition],false);
-                }
-            }else{
-                control.SkinnedMeshAnimator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.LockTransition],false);
-            }
+            
         }
 
         // private void LateUpdate(){
@@ -135,26 +105,7 @@ namespace Games_tutorial
         }
 
 
-        public bool IsRunning(System.Type type) {
-            // for(int i=0;i<CurrentRunningAbilities.Count;i++){
-            //     if(type==CurrentRunningAbilities[i].GetType()){
-            //         if(CurrentRunningAbilities[i]==self){
-            //             return false;
-            //         }else{
-            //             //Debug.Log(type.ToString()+" is already running");
-            //             return true;
-            //         }
-            //     }
-            // }
-            // return false;
-
-            foreach(KeyValuePair<StateData,int> data in CurrentRunningAbilities){
-                if(data.Key.GetType()==type){
-                    return true;
-                }
-            }
-            return false;
-        }
+        
         
         public bool StateNameContains(string str) {
             // for(int i=0;i<CurrentRunningAbilities.Count;i++){

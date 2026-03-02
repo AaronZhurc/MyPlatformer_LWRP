@@ -10,7 +10,7 @@ namespace Games_tutorial
     {
         public override void OnEnter(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
-            animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Jump],false);
+            // animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Jump],false);
             animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Attack],false);
             animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Move],false);
 
@@ -38,12 +38,12 @@ namespace Games_tutorial
             if(control.Jump){
                 // bool jumped=control.AIR_CONTROL.GetBool((int)AirControlBool.JUMPED);
                 if(!characterState.JUMP_DATA.Jumped){
-                    if(control.animationProgress.Ground!=null){
-                        animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Jump],true);
+                    if(characterState.GROUND_DATA.Ground!=null){
+                        // animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Jump],true);
                     }
                 }
             }else{
-                if(!control.animationProgress.IsRunning(typeof(Jump))){
+                if(!control.ANIMATION_DATA.IsRunning(typeof(Jump))){
                     characterState.JUMP_DATA.Jumped=false;
                 }
             }

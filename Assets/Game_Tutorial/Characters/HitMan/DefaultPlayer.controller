@@ -307,6 +307,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 326c00111d453c344a717cbd346eedc8, type: 2}
   - {fileID: 11400000, guid: d6f2bec065c710d4c92ef954dbde9e4d, type: 2}
   - {fileID: 11400000, guid: 59a574ef94f13eb46b792fa046d5761b, type: 2}
+  - {fileID: 11400000, guid: bf64e5efbe4612b4c8730a1a0992311f, type: 2}
 --- !u!1101 &-8251801305889814488
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2815,6 +2816,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c8f860bfeac8181499ece1b3579953a1, type: 2}
   - {fileID: 11400000, guid: 44f443b3ec7040b4781dc78ac3079d5d, type: 2}
   - {fileID: 11400000, guid: 2367a8db1468f864494a1b1950e4c99d, type: 2}
+  - {fileID: 11400000, guid: cd972678ca46aad4891e542b844c238c, type: 2}
 --- !u!1101 &-935304117345880309
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -3253,9 +3255,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Jump
-    m_EventTreshold: 0
+  - m_ConditionMode: 6
+    m_ConditionEvent: TransitionIndex
+    m_EventTreshold: 3
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -35203001755757748}
   m_Solo: 0
@@ -3399,9 +3401,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Jump
-    m_EventTreshold: 0
+  - m_ConditionMode: 6
+    m_ConditionEvent: TransitionIndex
+    m_EventTreshold: 7
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -35203001755757748}
   m_Solo: 0

@@ -37,7 +37,7 @@ namespace Games_tutorial
             }else{
                 control.Attack=false;
             }
-            control.animationProgress.AttackTriggered=control.Attack;
+            characterState.ATTACK_DATA.AttackTriggered=control.Attack;
         }
 
         public void NormalGroundAttack(CharacterControl control){
@@ -45,7 +45,7 @@ namespace Games_tutorial
                 control.MoveRight=false;
                 control.MoveLeft=false;
                 if(control.aiProgress.IsFacingTarget()
-                   && control.animationProgress.IsRunning(typeof(MoveForward))){
+                   && control.ANIMATION_DATA.IsRunning(typeof(MoveForward))){
                     control.Attack=true;
                 }
             }else{
@@ -59,14 +59,14 @@ namespace Games_tutorial
                     control.MoveRight=true;
                     control.MoveLeft=false;
                     if(control.aiProgress.IsFacingTarget()
-                       && control.animationProgress.IsRunning(typeof(MoveForward))){
+                       && control.ANIMATION_DATA.IsRunning(typeof(MoveForward))){
                         control.Attack=true;
                     }
                 }else{
                     control.MoveRight=false;
                     control.MoveLeft=true;
                     if(control.aiProgress.IsFacingTarget()
-                       && control.animationProgress.IsRunning(typeof(MoveForward))){
+                       && control.ANIMATION_DATA.IsRunning(typeof(MoveForward))){
                         control.Attack=true;
                     }
                 }

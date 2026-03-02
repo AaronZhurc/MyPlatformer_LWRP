@@ -50,7 +50,7 @@ namespace Games_tutorial
         }
 
         public override void OnFixedUpdate() {
-            if(control.animationProgress.IsRunning(typeof(MoveForward))){
+            if(control.ANIMATION_DATA.IsRunning(typeof(MoveForward))){
                 CheckFrontBlocking();
             }else{
                 if(FrontBlockingObjs.Count!=0){
@@ -58,7 +58,7 @@ namespace Games_tutorial
                 }
             }
             //Checking while LedgeGrab
-            if(control.animationProgress.IsRunning(typeof(MoveUp))) {
+            if(control.ANIMATION_DATA.IsRunning(typeof(MoveUp))) {
                 if(control.animationProgress.LatestMoveUp.Speed > 0f) {
                     CheckUpBlocking();
                 }
@@ -110,7 +110,7 @@ namespace Games_tutorial
                 control.RIGID_BODY.AddForce(Vector3.up*250f);
 
                 foreach(CharacterControl c in MarioStompTargets) {
-                    AttackInfo info=new AttackInfo();
+                    AttackCondition info=new AttackCondition();
                     info.CopyInfo(control.DAMAGE_DATA.MarioStampAttack, control);
 
                     int index=Random.Range(0,c.RAGDOLL_DATA.BodyParts.Count);
@@ -146,9 +146,9 @@ namespace Games_tutorial
         }
 
         void CheckDownBlocking(){
-            foreach(GameObject o in control.COLLISION_DATA.BottomSpheres) {
+            foreach(GameObject o in control.COLLISION_SPHERE_DATA.BottomSpheres) {
                 //CheckRaycastCollision(o,Vector3.down,0.1f,DownBlockingObjs);
-                GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,Vector3.down,0.1f,ref control.animationProgress.CollidingPoint);
+                GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,Vector3.down,0.1f,ref control.BLOCKING_DATA.RaycastContact);
                 if(blockingObj != null) {
                    AddBlockingObjToDic(DownBlockingObjs,o,blockingObj);
                 }
@@ -159,9 +159,9 @@ namespace Games_tutorial
         }
 
         void CheckUpBlocking(){
-            foreach(GameObject o in control.COLLISION_DATA.UpSpheres) {
+            foreach(GameObject o in control.COLLISION_SPHERE_DATA.UpSpheres) {
                 //CheckRaycastCollision(o,this.transform.up,0.3f,UpBlockingObjs);
-                GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,this.transform.up,0.1f,ref control.animationProgress.CollidingPoint);
+                GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,this.transform.up,0.1f,ref control.BLOCKING_DATA.RaycastContact);
                 if(blockingObj != null) {
                    AddBlockingObjToDic(UpBlockingObjs,o,blockingObj);
                 }
@@ -174,17 +174,17 @@ namespace Games_tutorial
 
         void CheckFrontBlocking(){
             if(!control.animationProgress.ForwardIsReversed()){
-                FrontSpheresList=control.COLLISION_DATA.FrontSpheres;
+                FrontSpheresList=control.COLLISION_SPHERE_DATA.FrontSpheres;
                 DirBlock=1f;
-                foreach(GameObject s in control.COLLISION_DATA.BackSpheres){
+                foreach(GameObject s in control.COLLISION_SPHERE_DATA.BackSpheres){
                     if(FrontBlockingObjs.ContainsKey(s)){
                         FrontBlockingObjs.Remove(s);
                     }
                 }
             }else{
-                FrontSpheresList=control.COLLISION_DATA.BackSpheres;
+                FrontSpheresList=control.COLLISION_SPHERE_DATA.BackSpheres;
                 DirBlock=-1f;
-                foreach(GameObject s in control.COLLISION_DATA.FrontSpheres){
+                foreach(GameObject s in control.COLLISION_SPHERE_DATA.FrontSpheres){
                     if(FrontBlockingObjs.ContainsKey(s)){
                         FrontBlockingObjs.Remove(s);
                     }
@@ -193,7 +193,7 @@ namespace Games_tutorial
 
             foreach(GameObject o in FrontSpheresList) {
                 //CheckRaycastCollision(o,this.transform.forward*DirBlock,LatestMoveForward.BlockDistance,FrontBlockingObjs);
-                GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,this.transform.forward*DirBlock,control.animationProgress.LatestMoveForward.BlockDistance,ref control.animationProgress.CollidingPoint);
+                GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,this.transform.forward*DirBlock,control.animationProgress.LatestMoveForward.BlockDistance,ref control.BLOCKING_DATA.RaycastContact);
                 if(blockingObj != null) {
                    AddBlockingObjToDic(FrontBlockingObjs,o,blockingObj);
                 }

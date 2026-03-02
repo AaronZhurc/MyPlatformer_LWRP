@@ -10,7 +10,7 @@ namespace Games_tutorial
         public override void OnEnter(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
             // characterState.characterControl.animationProgress.IsLanding=true;
-            animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Jump],false);
+            // animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Jump],false);
             animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Move],false); //着陆时不应该继续移动了
         }
         public override void UpdateAbility(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)

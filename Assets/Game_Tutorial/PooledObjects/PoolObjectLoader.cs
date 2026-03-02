@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Games_tutorial
 {
     public enum PoolObjectType{
-        ATTACKINFO,
+        ATTACKCONDITION,
         CROWBAR_OBJ,
         CROWBAR_VFX,
         DAMAGE_WHITE_VFX,
@@ -16,9 +16,9 @@ namespace Games_tutorial
         public static PoolObject InstantiatePrefab(PoolObjectType objType){
             GameObject obj=null;
             switch(objType){
-                case PoolObjectType.ATTACKINFO:
+                case PoolObjectType.ATTACKCONDITION:
                 {
-                    obj=Instantiate(Resources.Load("AttackInfo",typeof(GameObject)) as GameObject);
+                    obj=Instantiate(Resources.Load("AttackCondition",typeof(GameObject)) as GameObject);
                     break;
                 }
                 case PoolObjectType.CROWBAR_OBJ:

@@ -14,6 +14,8 @@ namespace Games_tutorial
         DAMAGE_DETECTOR,
         COLLISION_SPHERES,
         INSTA_KILL,
+        PLAYER_ATTACK,
+        PLAYER_ANIMATION,
     }
     // public enum BoolData {
     //     NONE,

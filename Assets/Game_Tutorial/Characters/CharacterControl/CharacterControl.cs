@@ -62,8 +62,11 @@ namespace Games_tutorial {
         public MomentumData MOMENTUM_DATA => subComponentProcessor.momentumData;
         public RotationData ROTATION_DATA => subComponentProcessor.rotationData;
         public JumpData JUMP_DATA => subComponentProcessor.jumpData;
-        public CollisionData COLLISION_DATA => subComponentProcessor.collisionData;
+        public CollisionSphereData COLLISION_SPHERE_DATA => subComponentProcessor.collisionSphereData;
         public InstaKillData INSTA_KILL_DATA => subComponentProcessor.instaKillData;
+        public GroundData GROUND_DATA => subComponentProcessor.groundData;
+        public AttackData ATTACK_DATA => subComponentProcessor.attackData;
+        public AnimationData ANIMATION_DATA => subComponentProcessor.animationData;
 
         public Dataset AIR_CONTROL => dataProcessor.GetDataset(typeof(AirControl));
         
@@ -77,10 +80,10 @@ namespace Games_tutorial {
         //public Dictionary<CharacterProc,CharacterProcDel> ProcDic=new Dictionary<CharacterProc,CharacterProcDel>();
         //public delegate void CharacterProcDel();
 
-        [Header("Gravity")]
+        // [Header("Gravity")]
         // public float GravityMultipilier; //坠落时获得动量
         // public float PullMultipilier; //放开跳跃按钮时获得的拉力
-        public ContactPoint[] contactPoints;
+
 
         [Header("Setup")]  //必须手动设置
         public PlayableCharacterType playableCharacterType;
@@ -155,7 +158,7 @@ namespace Games_tutorial {
         }
 
         private void OnCollisionStay(Collision collision) {
-            contactPoints = collision.contacts;
+            GROUND_DATA.BoxColliderContacts = collision.contacts;
         }
 
         // public List<TriggerDetector> GetAllTrigers(){

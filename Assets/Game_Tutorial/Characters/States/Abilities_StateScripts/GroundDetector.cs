@@ -14,17 +14,17 @@ namespace Games_tutorial
         public float Distance;
 
         private GameObject testingSphere;
-        public GameObject TESTING_SPHERE
-        {
-            get
-            {
-                if (testingSphere == null)
-                {
-                    testingSphere = GameObject.Find("TestingSphere");
-                }
-                return testingSphere;
-            }
-        }
+        // public GameObject TESTING_SPHERE
+        // {
+        //     get
+        //     {
+        //         if (testingSphere == null)
+        //         {
+        //             testingSphere = GameObject.Find("TestingSphere");
+        //         }
+        //         return testingSphere;
+        //     }
+        // }
 
         public override void OnEnter(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
@@ -48,13 +48,13 @@ namespace Games_tutorial
         }
         bool IsGrounded(CharacterControl control){
             //if(control.RIGID_BODY.velocity.y>-0.001f&&control.RIGID_BODY.velocity.y<=0f){ //使用速度进行判断，但由于有时这个速度不是严格0，所以我们得弄出区间
-                if(control.contactPoints!=null){
-                    foreach(ContactPoint c in control.contactPoints){
+                if(control.GROUND_DATA.BoxColliderContacts!=null){
+                    foreach(ContactPoint c in control.GROUND_DATA.BoxColliderContacts){
                         float colliderBottom=(control.transform.position.y+control.boxCollider.center.y)-(control.boxCollider.size.y/2f);
                         float yDifference=Mathf.Abs(c.point.y-colliderBottom);
                         if(yDifference<0.01f){
                             if(Math.Abs(control.RIGID_BODY.velocity.y)<0.001f){
-                                control.animationProgress.Ground=c.otherCollider.transform.root.gameObject;
+                                control.GROUND_DATA.Ground=c.otherCollider.transform.root.gameObject;
                                 control.BOX_COLLIDER_DATA.LandingPosition=new Vector3(0f,c.point.y,c.point.z);
                                 // if (control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT))
                                 // {
@@ -68,15 +68,15 @@ namespace Games_tutorial
             //}
 
             if(control.RIGID_BODY.velocity.y<0f){//只有下落时才检查
-                foreach(GameObject o in control.COLLISION_DATA.BottomSpheres){
+                foreach(GameObject o in control.COLLISION_SPHERE_DATA.BottomSpheres){
                     // Debug.DrawRay(o.transform.position,-Vector3.up*Distance,Color.yellow);
                     // RaycastHit hit;
-                    GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,-Vector3.up,Distance,ref control.animationProgress.CollidingPoint);
+                    GameObject blockingObj=CollisionDetection.GetCollidingObject(control,o,-Vector3.up,Distance,ref control.BLOCKING_DATA.RaycastContact);
                     if(blockingObj != null) {
                         CharacterControl c=CharacterManager.Instance.GetCharacter(blockingObj.transform.root.gameObject);
                         if(c==null) {
-                            control.animationProgress.Ground=blockingObj.transform.root.gameObject;
-                            control.BOX_COLLIDER_DATA.LandingPosition=new Vector3(0f,control.animationProgress.CollidingPoint.y,control.animationProgress.CollidingPoint.z);
+                            control.GROUND_DATA.Ground=blockingObj.transform.root.gameObject;
+                            control.BOX_COLLIDER_DATA.LandingPosition=new Vector3(0f,control.BLOCKING_DATA.RaycastContact.y,control.BLOCKING_DATA.RaycastContact.z);
                             // if (control.SubComponentsDic.ContainsKey(SubComponents.MANUALINPUT)){
                             //     TESTING_SPHERE.transform.position = control.animationProgress.LandingPosition;
                             // }
@@ -99,7 +99,7 @@ namespace Games_tutorial
                     // }
                 }
             }
-            control.animationProgress.Ground=null;
+            control.GROUND_DATA.Ground=null;
             return false;
         }
     }

@@ -45,17 +45,17 @@ namespace Games_tutorial
 
 
         //public List<RuntimeAnimatorController> DeathAnimators=new List<RuntimeAnimatorController>(); //一组相关死亡动画
-        private List<AttackInfo> FinishedAttacks=new List<AttackInfo>();
+        private List<AttackCondition> FinishedAttacks=new List<AttackCondition>();
 
         public override void OnEnter(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo)
         {
-            characterState.characterControl.animationProgress.AttackTriggered=false;
+            characterState.ATTACK_DATA.AttackTriggered=false;
             
             animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Attack],false);
 
             // GameObject obj=Instantiate(Resources.Load("AttackInfo",typeof(GameObject))) as GameObject; //将预制件AttackInfo实例化 //我们拥有pool系统之后就不需要实例化了
-            GameObject obj=PoolManager.Instance.GetObject(PoolObjectType.ATTACKINFO);
-            AttackInfo info=obj.GetComponent<AttackInfo>();
+            GameObject obj=PoolManager.Instance.GetObject(PoolObjectType.ATTACKCONDITION);
+            AttackCondition info=obj.GetComponent<AttackCondition>();
 
             obj.SetActive(true); //获取后打开
 
@@ -76,7 +76,7 @@ namespace Games_tutorial
 
         public void RegisterAttack(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo){
             if(StartAttackTime<=stateInfo.normalizedTime && EndAttackTime>stateInfo.normalizedTime){
-                foreach (AttackInfo info in AttackManager.Instance.CurrentAttacks)
+                foreach (AttackCondition info in AttackManager.Instance.CurrentAttacks)
                 {
                     if(info==null){
                         continue;
@@ -93,7 +93,7 @@ namespace Games_tutorial
 
         public void DeregisterAttack(CharacterState characterState, Animator animator, AnimatorStateInfo stateInfo){
             if(stateInfo.normalizedTime>=EndAttackTime){ //动画播完
-                 foreach (AttackInfo info in AttackManager.Instance.CurrentAttacks)
+                 foreach (AttackCondition info in AttackManager.Instance.CurrentAttacks)
                 {
                     if(info==null){
                         continue;
@@ -121,7 +121,7 @@ namespace Games_tutorial
             if(stateInfo.normalizedTime>= ComboStartTime){ //可以使用公共变量设置combo的开始和限制时间
                 if(stateInfo.normalizedTime<ComboEndTime){
                     // CharacterControl control=characterState.GetCharacterControl(animator);
-                    if(characterState.characterControl.animationProgress.AttackTriggered/*control.Attack*/){
+                    if(characterState.ATTACK_DATA.AttackTriggered/*control.Attack*/){
                         //Debug.Log("upper");
                         animator.SetBool(HashManager.Instance.DicMainParams[TransitionParameter.Attack],true);
                         // characterState.characterControl.animationProgress.AttackTriggered=false;
@@ -138,12 +138,12 @@ namespace Games_tutorial
 
         public void ClearAttack(){
             FinishedAttacks.Clear();
-            foreach(AttackInfo info in AttackManager.Instance.CurrentAttacks){
+            foreach(AttackCondition info in AttackManager.Instance.CurrentAttacks){
                 if(info==null|| info.AttackAbility==this /*info.isFinished*/){ //改为检测该攻击是否属于该能力
                     FinishedAttacks.Add(info);
                 }
             }
-            foreach(AttackInfo info in FinishedAttacks){
+            foreach(AttackCondition info in FinishedAttacks){
                 if(AttackManager.Instance.CurrentAttacks.Contains(info)){
                     AttackManager.Instance.CurrentAttacks.Remove(info);
                 }
